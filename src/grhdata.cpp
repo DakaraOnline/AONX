@@ -124,7 +124,6 @@ namespace ao
 				item.tileHeight = item.pixelHeight / 32;
 				
 				item.frames[0] = grhNum;
-				item.myID = grhNum;
 			}
 			
 			if ( f.eof() )

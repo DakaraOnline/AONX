@@ -25,7 +25,7 @@
 
 #include "SDL.h"
 #include "file_types.h"
-#pragma warning (disable : 4800 )
+
 
 namespace ao
 {
@@ -46,7 +46,7 @@ namespace ao
 	{
 		public:
 			GrhBasic() 
-			: index(0), frame(0), speed(0), started(0), ticks(0),looptimes(0) 
+			: index(0), frame(0), speed(0), started(0), ticks(0) 
 			{}
 		
 			void init( Sint16 _index, bool autoStart = false );
@@ -61,7 +61,6 @@ namespace ao
 			int ticks;
 			Sint16 index;
 			Sint8 frame, speed, started;
-			Sint8 looptimes;
 	};
 	
 /*
@@ -104,7 +103,7 @@ namespace ao
 	public:
 		GrhDataItem()
 		: sx(0), sy(0), fileNum(0), pixelWidth(0), 
-		  pixelHeight(0), centerTweakx(-1), centerTweaky(-1), tileWidth(0), tileHeight(0), 
+		  pixelHeight(0), tileWidth(0), tileHeight(0), 
 		  numFrames(0), speed(0)
 		{}
 		
@@ -119,10 +118,6 @@ namespace ao
 		
 		/// Ancho de la imagen en pixeles
 		Sint16 pixelWidth;
-
-		int centerTweakx;
-		int centerTweaky;
-		int myID;
 		
 		/// Alto de la imagen en pixeles
 		Sint16 pixelHeight;

@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Esteban Torre  				   *
- *   esteban.torre@gmail.com  						   *
+ *   Copyright (C) 2006 by alejandro santos   *
+ *   alejolp@gmail.com   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,63 +17,32 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef RENDERERENGINEOGL_H
+#define RENDERERENGINEOGL_H
 
-#ifndef _hechizos_h
-#define _hechizos_h
-#include <SDL.h>
-#include <guichan.hpp>
+#include "rendererengine.h"
 
-#include <string>
-#include <vector>
-#include <list>
+#include "SDL.h"
+#include "basictypes.h"
 
-class Hechizo : public gcn::Button
+/**
+	@author alejandro santos <alejolp@gmail.com>
+*/
+class RendererEngineOGL : public RendererEngine
 {
 public:
-	Hechizo();
-	~Hechizo(){}
+	RendererEngineOGL();
+	
+	virtual ~RendererEngineOGL();
 
-	void draw(gcn::Graphics * g);
-
-	void setNombre(std::string n){nombre=n;}
-	std::string Nombre(){return nombre;}
-	void setIndex(unsigned int n) {index=n;}
-	unsigned int Index() {return index;}
-	void setInvervalo(unsigned int n) {intervalo=n;}
-	unsigned int Intervalo() {return intervalo;}
-	void actualizaNombre();
-	void clearUse() { ultimo_uso = 0; }
-	bool usar();
-
-	bool puede_usar();//No relacionado al intervalo, solo si es usable.
-
+	virtual void beginFrame();
+	virtual void endFrame();
+	
+	virtual void renderTecho( ao::MapTile & tile, Offset basePixel );
 private:
-	unsigned int index;
-	unsigned int ultimo_uso;
-	unsigned int intervalo;
-	bool actualiza;
-	std::string nombre;
-};
 
-class Hechizos : public gcn::Window, gcn::ActionListener
-{
-public:
-	Hechizos();
-	~Hechizos();
-	void init();
-	std::vector<Hechizo*> hechis;
-	void draw (gcn::Graphics *graphics);
-	void drawBorder(gcn::Graphics*){};
-	void set_visibility(bool a){ visible=a;}
-	bool is_visible() { return visible; }
-	void action(const gcn::ActionEvent &actionEvent);
-	void updateDisplay(bool suma);
-private:
-	bool visible;
-	gcn::Button *up;
-	gcn::Button *down;
-	gcn::Image* img;
-	int showingFrom;
+	SDL_Surface* _screen;
+
 };
 
 #endif

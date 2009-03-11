@@ -25,7 +25,6 @@
 #include "customwidgets.h"
 #include <string>
 #include <vector>
-#include "stats.h"
 
 //TODO: mover esto a custom widgets?
 class guiStringList : public gcn::ListModel
@@ -52,7 +51,7 @@ private:
 };
 
 
-class vcreation : public gcn::Window, public gcn::ActionListener, public AttributesObserver
+class vcreation : public gcn::Window, public gcn::ActionListener
 {
 public:
 	vcreation();
@@ -61,13 +60,7 @@ public:
 	void draw (gcn::Graphics *graphics);
 	void drawBorder (gcn::Graphics *graphics) {}
 	void action(const gcn::ActionEvent& actionEvent);
-
-	void update(Attributes* d);
-
-	void setCiudad(int num, std::string nom);
-	void setClase(int num, std::string nom);
-	void setRaza(int num, std::string nom);
-	void setGenero(int num, std::string nom);
+	void setDados(int fuerza,int agilidad,int inteligencia,int constitucion,int carisma);
 	int getCiudad();
 	int getRaza();
 	int getClase();

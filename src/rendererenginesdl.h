@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2008 by Esteban Torre                                   *
- *   esteban.torre@gmail.com                                               *
+ *   Copyright (C) 2006 by alejandro santos   *
+ *   alejolp@gmail.com   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,26 +17,35 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef RENDERERENGINESDL_H
+#define RENDERERENGINESDL_H
 
-#ifndef _mensajes_h
-#define _mensajes_h
+#include "rendererengine.h"
 
-#include <string>
-#include <vector>
+#include "SDL.h"
 
-class Msgs
+
+
+/**
+	@author alejandro santos <alejolp@gmail.com>
+*/
+class RendererEngineSDL : public RendererEngine
 {
 public:
-	Msgs(){};
-	~Msgs(){};
+	RendererEngineSDL();
 
-	std::string get(unsigned int n);
-	std::string get(unsigned int n, const std::string &params);
+	virtual ~RendererEngineSDL();
 
-	void cargarDatos();
-
-private:
-	std::vector<std::string> data;
+	// virtual void render( int incX, int incY );
+	virtual void beginFrame();
+	virtual void endFrame();
+		
+protected:
+	
+	SDL_Surface* _screen;
+	
 };
 
-#endif //#ifndef _mensajes_h
+
+#endif
+

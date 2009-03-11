@@ -29,13 +29,10 @@
 #include "clienteargentum.h"
 #include "entity.h"
 #include "linked_ptr.h"
-#include "rendererengine.h"
 #include "configdata.h"
 #include "audioengine.h"
 #include "verror.h"
 #include "fonts.h"
-#include "grhmanager.h"
-#include "stats.h"
 
 using namespace std;
 //#define DEBUG
@@ -163,7 +160,7 @@ void cPSDisconnect::exec(){
 
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// Paquete: CommerceEnd
-/// Sin parï¿½metros.
+/// Sin parámetros.
 /// @brief: Informa de la finalizaciÃ³n del comercio con el npc.
 
 cPSCommerceEnd::cPSCommerceEnd(){
@@ -213,7 +210,7 @@ void cPSBankEnd::exec(){
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// Paquete: CommerceInit
 /// Sin parÃ¡metros
-/// @brief: Informa al cliente del comienzo del diï¿½logo de comercio con un NPC.
+/// @brief: Informa al cliente del comienzo del diálogo de comercio con un NPC.
 
 cPSCommerceInit::cPSCommerceInit(){
 }
@@ -240,7 +237,7 @@ void cPSCommerceInit::exec(){
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// Paquete: BankInit
 /// Sin parÃ¡metros.
-/// @brief: Informa al cliente del comienzo del diï¿½logo del banco.
+/// @brief: Informa al cliente del comienzo del diálogo del banco.
 
 cPSBankInit::cPSBankInit(){
 }
@@ -355,7 +352,7 @@ void cPSShowCarpenterForm::exec(){
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// Paquete: NPCSwing
 /// Sin parÃ¡metros.
-/// @brief: Informa al cliente que un NPC fallï¿½ al intentar pegarle al usuario.
+/// @brief: Informa al cliente que un NPC falló al intentar pegarle al usuario.
 
 cPSNPCSwing::cPSNPCSwing(){
 }
@@ -372,14 +369,14 @@ void cPSNPCSwing::exec(){
         #ifdef DEBUG
         cout << "Paquete.cpp: NPCSwing" << endl;
         #endif
-	Consola::buffer << "La criatura fallï¿½ el golpe." <<  std::endl;
+	Consola::buffer << "La criatura falló el golpe." <<  std::endl;
 }
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// Paquete: NPCKillUser
 /// Sin parÃ¡metros.
-/// @brief: Informa al cliente que un NPC matï¿½ al usuario.
+/// @brief: Informa al cliente que un NPC mató al usuario.
 
 cPSNPCKillUser::cPSNPCKillUser(){
 }
@@ -403,7 +400,7 @@ void cPSNPCKillUser::exec(){
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// Paquete: BlockedWithShieldUser
 /// Sin parÃ¡metros.
-/// @brief: Informa al cliente que el usuario rechazï¿½ un ataque con el escudo.
+/// @brief: Informa al cliente que el usuario rechazó un ataque con el escudo.
 
 cPSBlockedWithShieldUser::cPSBlockedWithShieldUser(){
 }
@@ -749,8 +746,7 @@ void cPSChangeMap::exec(){
 	stringstream temp;
 	temp.str(std::string());
 	temp << ConfigData::GetPath("mapas") << "Mapa" << map << ".map";
-	ClienteArgentum::instancia()->ActualMap()->loadMapFile(temp.str().c_str(), ClienteArgentum::instancia()->_engine->getGrhManager(), ClienteArgentum::instancia()->_engine->getImageManager());
-	ClienteArgentum::instancia()->get_ministats()->map_changed();
+	ClienteArgentum::instancia()->ActualMap()->loadMapFile(temp.str().c_str());
 }
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -970,7 +966,7 @@ void cPSChatOverHead::exec(){
 	char* p;
 	if((p=strstr(text,"\r")))
 	{
-		*p=' ';//TODO sacame cuando no halla mï¿½s de estas mierdas en los recursos
+		*p=' ';//TODO sacame cuando no hay más de estas mierdas en los recursos
 	}
         #ifdef DEBUG
         cout << "Paquete.cpp: ChatOverHead; text=" << text << "; charindex=" << charindex << "; r,g,b=" << (int)r << "," << (int)g << "," << (int)b << endl;
@@ -1009,7 +1005,7 @@ void cPSConsoleMsg::exec(){
 	char* p;
 	if((p=strstr(text,"\r")))
 	{
-		*p=' ';//TODO sacame cuando no halla mï¿½s de estas mierdas en los recursos
+		*p=' ';//TODO sacame cuando no hay más de estas mierdas en los recursos
 	}
         #ifdef DEBUG
         cout << "Paquete.cpp: ConsoleMsg; text=" << text << "; fontindex=" << (int) fontindex << endl;
@@ -1201,23 +1197,6 @@ void cPSCharacterCreate::exec(){
 	//ao::Entity* ent = new ao::Entity( _map, ao::Pos( x-1, y-1), (ao::Entity::Heading)(heading-1) );
 	ClienteArgentum::instancia()->_entities[charindex]->loadData( _bodyData,bodyindex-1, headindex-1, helmetindex-1, weaponindex-1, shieldindex -1);
 	ClienteArgentum::instancia()->_entities[charindex]->setNombre(std::string(nombre));
-	ClienteArgentum::instancia()->_entities[charindex]->setFx(_bodyData,fxindex,fxloops);
-
-
-	//TODO FIXME : primer intento de precarga
-	if(ClienteArgentum::instancia()->_entities[charindex]->getBodyGrh().isValid())
-	{
-		ClienteArgentum::instancia()->_engine->getImageManager()->getImage(
-			ClienteArgentum::instancia()->_engine->getGrhManager()->getNextFrame(
-				ClienteArgentum::instancia()->_entities[charindex]->getBodyGrh()).fileNum);
-	}
-
-	if(ClienteArgentum::instancia()->_entities[charindex]->getHeadGrh().isValid())
-	{
-		ClienteArgentum::instancia()->_engine->getImageManager()->getImage(
-			ClienteArgentum::instancia()->_engine->getGrhManager()->getNextFrame(
-				ClienteArgentum::instancia()->_entities[charindex]->getHeadGrh()).fileNum);
-	}
 
 }
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1322,7 +1301,6 @@ void cPSCharacterChange::exec(){
 	ao::BodyData_ptr _bodyData = ClienteArgentum::instancia()->BodyData();
 	ClienteArgentum::instancia()->_entities[charindex]->loadData( _bodyData,bodyindex-1, headindex-1, helmetindex-1, weaponindex-1, shieldindex -1);
 	ClienteArgentum::instancia()->_entities[charindex]->setHeading((ao::Entity::Heading)(heading));
-	ClienteArgentum::instancia()->_entities[charindex]->setFx(_bodyData,fxindex,fxloops);
 
 	
 }
@@ -1357,10 +1335,6 @@ void cPSObjectCreate::exec(){
         #endif
 	//TODO: esto es MUY hardcoded.
 	ClienteArgentum::instancia()->ActualMap()->getTile( ao::Pos( x-1, y-1 ) ).obj.init( grhindex );
-	//TODO FIXME: primer intento de precarga
-	ClienteArgentum::instancia()->_engine->getImageManager()->getImage(
-		ClienteArgentum::instancia()->_engine->getGrhManager()->getNextFrame(
-		ClienteArgentum::instancia()->ActualMap()->getTile( ao::Pos( x-1, y-1 ) ).obj).fileNum);
 }
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -1583,21 +1557,13 @@ cPSRainToggle::~cPSRainToggle(){
 
 bool cPSRainToggle::unserialize(cByteQueue* q){
 	q->RemoveData(1); //Eliminamos el byte de ID
-	q->Read(&rain);
 	return true;
 }
 
 void cPSRainToggle::exec(){
         #ifdef DEBUG
-        cout << "Paquete.cpp: RainToggle " << (int) rain << endl;
+        cout << "Paquete.cpp: RainToggle" << endl;
         #endif
-		if(rain)
-		{
-			ClienteArgentum::instancia()->_engine->raining = true;
-		}else
-		{
-			ClienteArgentum::instancia()->_engine->raining = false;
-		}
 }
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -1627,8 +1593,6 @@ void cPSCreateFX::exec(){
         #ifdef DEBUG
         cout << "Paquete.cpp: CreateFX; charindex=" << charindex << "; fxindex=" << fxindex << ";fxloops=" << fxloops << endl;
         #endif
-	ao::BodyData_ptr _bodyData = ClienteArgentum::instancia()->BodyData();
-	ClienteArgentum::instancia()->_entities[charindex]->setFx(_bodyData,fxindex,fxloops);
 }
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -1677,7 +1641,6 @@ void cPSUpdateUserStats::exec(){
         #endif
 	ClienteArgentum::instancia()->get_ministats()->setMaxVida(maxhp);
 	ClienteArgentum::instancia()->get_ministats()->setVida(minhp);
-	ClienteArgentum::instancia()->get_ministats()->setMana(0);
 	ClienteArgentum::instancia()->get_ministats()->setMaxMana(maxman);
 	ClienteArgentum::instancia()->get_ministats()->setMana(minman);
 	ClienteArgentum::instancia()->get_ministats()->setMaxStamina(maxsta);
@@ -1719,7 +1682,7 @@ void cPSWorkRequestTarget::exec(){
 /// @param: Sint8 slot
 /// @param: Sint16 objindex
 /// @param: char* nombre
-/// @param: Uint16 cantidad
+/// @param: Sint16 cantidad
 /// @param: Sint8 equipado
 /// @param: Sint16 grhindex
 /// @param: Sint8 objtype
@@ -1857,7 +1820,6 @@ void cPSChangeBankSlot::exec(){
 /// Paquete: ChangeSpellSlot
 /// @param: Sint8 slot
 /// @param: Sint16 hindex (va a userhechizos(slot)?)
-/// @param: Sint32 Interval
 /// @param: char* nombre
 /// @brief: Informa al cliente el hechizo correspondiente a slot
 
@@ -1875,8 +1837,6 @@ bool cPSChangeSpellSlot::unserialize(cByteQueue* q){
 	offset+=tmpoffset;
 	if((tmpoffset=q->Peek(&hindex,offset))<1) return false;
 	offset+=tmpoffset;
-	if((tmpoffset=q->Peek(&interval,offset))<1) return false;
-	offset+=tmpoffset;
 	if((tmpoffset=q->ReadString(nombre,256-1,offset))<1) return false;
 	offset+=tmpoffset;
 	q->RemoveData(offset);
@@ -1886,11 +1846,8 @@ bool cPSChangeSpellSlot::unserialize(cByteQueue* q){
 void cPSChangeSpellSlot::exec(){
         #ifdef DEBUG
 	cout << "Paquete.cpp: ChangeSpellSlot; slot=" << (int) slot;
-	cout << "; hindex=" << hindex << ";interval= " << interval << "; nombre=" << nombre << endl;
+	cout << "; hindex=" << hindex << "; nombre=" << nombre << endl;
         #endif
-	ClienteArgentum::instancia()->VHechizos.hechis[slot]->setNombre(nombre);
-	ClienteArgentum::instancia()->VHechizos.hechis[slot]->setIndex(hindex);
-	ClienteArgentum::instancia()->VHechizos.hechis[slot]->setInvervalo(interval);
 }
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -1920,19 +1877,12 @@ bool cPSAtributes::unserialize(cByteQueue* q){
 	return true;
 }
 
-void cPSAtributes::exec()
-{
-	#ifdef DEBUG
-	cout << "Paquete.cpp: Atributes; fuerza=" << (int) fuerza << "; agilidad=";
+void cPSAtributes::exec(){
+        #ifdef DEBUG
+        cout << "Paquete.cpp: Atributes; fuerza=" << (int) fuerza << "; agilidad=";
 	cout << (int) agilidad << "; inteligencia=" << (int )inteligencia << "; carisma=";
 	cout << (int) carisma << "; constitucion=" << (int) constitucion << endl;
-	#endif
-	ClienteArgentum::instancia()->attributes()[0].set(fuerza);
-	ClienteArgentum::instancia()->attributes()[1].set(agilidad);
-	ClienteArgentum::instancia()->attributes()[2].set(inteligencia);
-	ClienteArgentum::instancia()->attributes()[3].set(carisma);
-	ClienteArgentum::instancia()->attributes()[4].set(constitucion);
-	ClienteArgentum::instancia()->attributes().notify();
+        #endif
 }
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -2374,7 +2324,7 @@ void cPSMiniStats::exec(){
 
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// Paquete: LevelUp
-/// @param: Uint16 skills
+/// @param: Sint16 skills
 /// @brief: Informa al cliente que el usuario subiÃ³ de nivel y gano x skills.
 
 cPSLevelUp::cPSLevelUp(){
@@ -2394,7 +2344,6 @@ void cPSLevelUp::exec(){
         #ifdef DEBUG
         cout << "Paquete.cpp: LevelUp; skills=" << skills << endl;
         #endif
-		ClienteArgentum::instancia()->skills().setFree(skills);
 }
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -2507,26 +2456,19 @@ bool cPSDiceRoll::unserialize(cByteQueue* q){
 	return true;
 }
 
-void cPSDiceRoll::exec()
-{
-	#ifdef DEBUG
-	cout << "Paquete.cpp: DiceRoll; fuerza=" << (int) fuerza << "; agilidad=";
+void cPSDiceRoll::exec(){
+        #ifdef DEBUG
+        cout << "Paquete.cpp: DiceRoll; fuerza=" << (int) fuerza << "; agilidad=";
 	cout << (int) agilidad << "; inteligencia=" << (int) inteligencia << "; carisma=";
 	cout << (int) carisma << "; constitucion=" << (int) constitucion << endl;
-	#endif
-	ClienteArgentum::instancia()->attributes()[0].set(fuerza);
-	ClienteArgentum::instancia()->attributes()[1].set(agilidad);
-	ClienteArgentum::instancia()->attributes()[2].set(inteligencia);
-	ClienteArgentum::instancia()->attributes()[3].set(carisma);
-	ClienteArgentum::instancia()->attributes()[4].set(constitucion);
-	ClienteArgentum::instancia()->attributes().notify();
-
+        #endif
+	ClienteArgentum::instancia()->Dados(fuerza,agilidad,inteligencia,constitucion,carisma);
 }
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// Paquete: MeditateToggle
-/// @param: Sint8 what
+/// Sin parÃ¡metros
 /// @brief: Informa al cliente que comenzÃ³/terminÃ³ de meditar
 
 cPSMeditateToggle::cPSMeditateToggle(){
@@ -2537,7 +2479,6 @@ cPSMeditateToggle::~cPSMeditateToggle(){
 
 bool cPSMeditateToggle::unserialize(cByteQueue* q){
 	q->RemoveData(1); //ID
-	q->Read(&what);
 	return true;
 }
 
@@ -2545,7 +2486,6 @@ void cPSMeditateToggle::exec(){
         #ifdef DEBUG
         cout << "Paquete.cpp: MeditateToggle" << endl;
         #endif
-	ClienteArgentum::instancia()->setMeditando(what);
 }
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -2597,8 +2537,8 @@ void cPSDumbNoMore::exec(){
 
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// Paquete: SendSkills
-/// @param: Uint8 skillN N for NUMSKILLS (actually 21)
-/// @param: Uint16 freeskills
+/// @param: Sint8 skillN N for NUMSKILLS (actually 21)
+/// @warning: only unserialized, no skills info saved.
 /// @brief: Informa los skills al cliente.
 
 cPSSendSkills::cPSSendSkills(){
@@ -2610,10 +2550,9 @@ cPSSendSkills::~cPSSendSkills(){
 bool cPSSendSkills::unserialize(cByteQueue* q){
 	if(q->len()<22) return false;///@warning: hardcoded NUMSKILLS = 21
 	q->RemoveData(1);//ID
-	for(unsigned int i=0;i<NUM_SKILLS;i++){
-		q->Read(&skill[i]);
+	for(int i=0;i<21;i++){
+		q->Read(&skill);
 	}
-	q->Read(&freeSkills);
 	return true;
 }
 
@@ -2621,12 +2560,6 @@ void cPSSendSkills::exec(){
         #ifdef DEBUG
         cout << "Paquete.cpp: SendSkills Warning, no skill info saved." << endl;
         #endif
-		for(unsigned int i=0;i<NUM_SKILLS;i++)
-		{
-			ClienteArgentum::instancia()->skills()[i].set(skill[i]);
-		}
-		ClienteArgentum::instancia()->skills().setFree(freeSkills);
-		ClienteArgentum::instancia()->skills().notify();
 }
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -2832,7 +2765,6 @@ cPSParalizeOK::~cPSParalizeOK(){
 
 bool cPSParalizeOK::unserialize(cByteQueue* q){
 	q->RemoveData(1);//id
-	q->Read(&paralizado);
 	return true;
 }
 
@@ -2840,10 +2772,6 @@ void cPSParalizeOK::exec(){
         #ifdef DEBUG
         cout << "Paquete.cpp: ParalizeOK" << endl;
         #endif
-	if(paralizado)
-		ClienteArgentum::instancia()->setParalizado(true);
-	else
-		ClienteArgentum::instancia()->setParalizado(false);
 }
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -3043,157 +2971,4 @@ void cPSShowGMPanelForm::exec(){
         #endif
 }
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-
-/// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-/// Paquete: SpellNotSpelled
-/// @param: Sint8 slot
-/// @brief: Tells the client that the last spell wasn't succefull
-
-cPSSpellNotSpelled::cPSSpellNotSpelled(){
-}
-
-cPSSpellNotSpelled::~cPSSpellNotSpelled(){
-}
-
-bool cPSSpellNotSpelled::unserialize(cByteQueue* q){
-	q->RemoveData(1); //Eliminamos el byte de ID
-	q->Read(&slot);
-	return true;
-}
-
-void cPSSpellNotSpelled::exec(){
-        #ifdef DEBUG
-        cout << "Paquete.cpp: SpellNotSpelled; slot=" << (int)slot << endl;
-        #endif
-	ClienteArgentum::instancia()->VHechizos.hechis[slot]->clearUse();
-}
-/// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-
-/// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-/// Paquete: GeneralInfo
-/// @param: Sint8 type
-/// @param: Sint8 slot
-/// @param: string text
-/// @brief: Tells the client citys, classes and "razas" information.
-cPSGeneralInfo::cPSGeneralInfo(){
-}
-
-cPSGeneralInfo::~cPSGeneralInfo(){
-}
-
-bool cPSGeneralInfo::unserialize(cByteQueue* q){
-	int offset=0;
-	int tmpoffset=0;
-	offset++;//ID
-	if((tmpoffset=q->Peek(&type,offset))<1) return false;
-	offset+=tmpoffset;
-	if((tmpoffset=q->Peek(&slot,offset))<1) return false;
-	offset+=tmpoffset;
-	if((tmpoffset=q->ReadString(text,256-1,offset))<1) return false;
-	offset+=tmpoffset;
-	q->RemoveData(offset);
-	return true;
-}
-
-void cPSGeneralInfo::exec(){
-	#ifdef DEBUG
-	cout << "Paquete.cpp: GeneralInfo; type=" << (int) type << " slot=" << (int)slot << " text=" << text << endl;
-	#endif
-	switch(type)
-	{
-		case Ciudades:
-			ClienteArgentum::instancia()->Ciudades(slot,text);
-			break;
-		case Clases:
-			ClienteArgentum::instancia()->Clases(slot,text);
-			break;
-		case Razas:
-			ClienteArgentum::instancia()->Razas(slot,text);
-			break;
-		default:
-			break;
-	}
-	
-}
-/// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-/// Paquete: Pong
-/// @brief: Pong...
-
-cPSPong::cPSPong(){
-}
-
-cPSPong::~cPSPong(){
-}
-
-bool cPSPong::unserialize(cByteQueue* q){
-	q->RemoveData(1); //Eliminamos el byte de ID
-	return true;
-}
-
-void cPSPong::exec(){
-        #ifdef DEBUG
-        cout << "Paquete.cpp: Pong;" << endl;
-        #endif
-	ClienteArgentum::instancia()->Pong();
-}
-
-/// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-cPSConsoleMessageN::cPSConsoleMessageN() {}
-cPSConsoleMessageN::~cPSConsoleMessageN() {}
-
-bool cPSConsoleMessageN::unserialize(cByteQueue* q)
-{
-	int offset=0;
-	int tmpoffset=0;
-	offset++;//ID
-	if((tmpoffset=q->Peek(&n,offset))<1) return false;
-	offset+=tmpoffset;
-	if((tmpoffset=q->Peek(&FontIndex,offset))<1) return false;
-	offset+=tmpoffset;
-	q->RemoveData(offset);
-	return true;
-}
-
-void cPSConsoleMessageN::exec()
-{
-        #ifdef DEBUG
-        cout << "Paquete.cpp: ConsoleMessageN; n = " << (unsigned int) n << " FontIndex = "
-		<< (unsigned int) FontIndex << endl;
-        #endif
-	Consola::buffer << ClienteArgentum::instancia()->Mensajes.get(n) << std::endl;
-}
-
-/// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-
-cPSConsoleMessageWithParams::cPSConsoleMessageWithParams() {}
-cPSConsoleMessageWithParams::~cPSConsoleMessageWithParams() {}
-
-bool cPSConsoleMessageWithParams::unserialize(cByteQueue* q)
-{
-	int offset=0;
-	int tmpoffset=0;
-	offset++;//ID
-	if((tmpoffset=q->Peek(&n,offset))<1) return false;
-	offset+=tmpoffset;
-	if((tmpoffset=q->Peek(&FontIndex,offset))<1) return false;
-	offset+=tmpoffset;
-	if((tmpoffset=q->ReadString(params,1024-1,offset))<1) return false;
-	offset+=tmpoffset;
-	q->RemoveData(offset);
-	return true;
-}
-
-void cPSConsoleMessageWithParams::exec()
-{
-        #ifdef DEBUG
-        cout << "Paquete.cpp: ConsoleMessageWithParams; n = " << (unsigned int) n << " FontIndex = "
-		<< (unsigned int) FontIndex << " params = " << params << endl;
-        #endif
-	Consola::buffer << ClienteArgentum::instancia()->Mensajes.get(n,params) << std::endl;
-}
-
 

@@ -38,7 +38,6 @@ ErrorMessage::ErrorMessage()
 	ventana->add(error);
 	boton->setActionEventId("ERROR_OK");
 	boton->addActionListener(ClienteArgentum::instancia());
-	showing=false;
 }
 
 ErrorMessage::~ErrorMessage()

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="8.00"
 	Name="cliente-win32"
 	ProjectGUID="{3B33905F-C730-4555-BC69-42EEEC9A799D}"
 	RootNamespace="clientewin32"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -64,14 +63,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="kernel32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_mixer.lib ws2_32.lib opengl32.lib $(NOINHERIT)"
+				AdditionalDependencies="kernel32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_mixer.lib ws2_32.lib opengl32.lib freetype235MT_D.lib $(NOINHERIT)"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="\SDL\lib;\SDL_image\lib;\freetype\objs;\SDL_mixer\lib"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				SubSystem="1"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -91,6 +88,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -121,12 +121,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="3"
 				AdditionalIncludeDirectories="..\..\include;\freetype\include;\SDL_mixer\include;\SDL_image\include;\SDL\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
-				WarningLevel="2"
+				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
@@ -141,15 +140,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="kernel32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_mixer.lib ws2_32.lib opengl32.lib $(NOINHERIT)"
+				AdditionalDependencies="kernel32.lib SDL.lib SDLmain.lib SDL_image.lib SDL_mixer.lib ws2_32.lib opengl32.lib freetype235MT.lib $(NOINHERIT)"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="\SDL\lib;\SDL_image\lib;\freetype\objs;\SDL_mixer\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -169,6 +166,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -248,6 +248,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\graphicsadapterogl.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\graphicsadaptersdl.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\grhdata.cpp"
 				>
 			</File>
@@ -257,10 +265,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\guichanloader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\hechizos.cpp"
 				>
 			</File>
 			<File
@@ -292,10 +296,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\particulas.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\rect.cpp"
 				>
 			</File>
@@ -304,7 +304,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\sdl_cursor_helper.cpp"
+				RelativePath="..\..\src\rendererengineogl.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\rendererenginesdl.cpp"
 				>
 			</File>
 			<File
@@ -312,7 +316,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\stats.cpp"
+				RelativePath="..\..\src\textrenderer.cpp"
 				>
 			</File>
 			<File
@@ -325,10 +329,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\verror.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\vestadisticas.cpp"
 				>
 			</File>
 			<File
@@ -618,6 +618,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\graphicsadapterogl.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\graphicsadaptersdl.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\grhdata.h"
 				>
 			</File>
@@ -627,10 +635,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\guichanloader.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\hechizos.h"
 				>
 			</File>
 			<File
@@ -666,10 +670,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\particulas.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\rect.h"
 				>
 			</File>
@@ -678,7 +678,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\sdl_cursor_helper.h"
+				RelativePath="..\..\src\rendererengineogl.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\rendererenginesdl.h"
 				>
 			</File>
 			<File
@@ -686,7 +690,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\stats.h"
+				RelativePath="..\..\src\textrenderer.h"
 				>
 			</File>
 			<File
@@ -699,10 +703,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\verror.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\vestadisticas.h"
 				>
 			</File>
 			<File

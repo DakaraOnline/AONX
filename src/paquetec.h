@@ -26,15 +26,11 @@
 #include "linked_ptr.h"
 
 #include <string>
-#include <vector>
 
 class cPaqueteCliente;
 typedef linked_ptr<cPaqueteCliente> PaqueteCliente_ptr;
 
-#ifdef WIN32
-#pragma warning (disable : 4305 )
-#pragma warning (disable : 4309 )
-#endif
+
 
 enum	PaqueteCliente{
 	LoginExistingChar=0,	// *OLOGIN
@@ -109,7 +105,7 @@ enum	PaqueteCliente{
 	GuildLeave,		//*/SALIRCLAN
 	RequestAccountState,	//*/BALANCE
 	PetStand,		//*/QUIETO
-	PetFollow,		//*/ACOMPAï¿½AR
+	PetFollow,		//*/ACOMPAÑAR
 	TrainList,		//*/ENTRENAR
 	Rest,			//*/DESCANSAR
 	Meditate,		//*/MEDITAR
@@ -151,7 +147,6 @@ enum	PaqueteCliente{
 	PartyKick,		//*/ECHARPARTY
 	PartySetLeader,		//*/PARTYLIDER
 	PartyAcceptMember,	//*/ACCEPTPARTY
-	GuildMemberList,
 	GMMessage,		//*/GMSG
 	showName,		//*/SHOWNAME
 	OnlineRoyalArmy,	//*/ONLINEREAL
@@ -220,10 +215,9 @@ enum	PaqueteCliente{
 	DumpIPTables,		//*/DUMPSECURITY"
 	CouncilKick,		//*/KICKCONSE
 	SetTrigger,		//*/TRIGGER
-	AskTrigger,
 	BannedIPList,		//*/BANIPLIST
 	BannedIPReload,		//*/BANIPRELOAD
-	GuildCompleteMemberList,	//*/MIEMBROSCLAN
+	GuildMemberList,	//*/MIEMBROSCLAN
 	GuildBan,		//*/BANCLAN
 	BanIP,			//*/BANIP
 	UnbanIP,		//*/UNBANIP
@@ -281,11 +275,7 @@ enum	PaqueteCliente{
 	ResetAutoUpdate,	//*/AUTOUPDATE
 	ChatColor,		//*/CHATCOLOR
 	Ignored,		//*/IGNORADO
-	CheckSlot,		//*/SLOT
-	GetClasesInfo,		//*Nuevo paquete
-	GetRazasInfo,		//*Nuevo paquete
-	GetCiudadesInfo,		//*Nuevo paquete
-	Ping	//*Nuevo Paquete
+	CheckSlot		//*/SLOT
 };
 
 
@@ -321,7 +311,7 @@ class cPCLoginExistingChar : public cPaqueteCliente{
 		bool serialize(cByteQueue* q);
 
 	private:
-		static const Uint8 id = LoginExistingChar;
+		static const Sint8 id = LoginExistingChar;
 		std::string User;
 		std::string Password;
 		Sint8 versionM;
@@ -338,7 +328,7 @@ class cPCWalk : public cPaqueteCliente{
 		bool serialize(cByteQueue* q);
 
 	private:
-		static const Uint8 id =  Walk;
+		static const Sint8 id =  Walk;
 		Sint8 heading;
 };
 
@@ -350,7 +340,7 @@ class cPCLeftClick : public cPaqueteCliente{
 		bool serialize(cByteQueue* q);
 
 	private:
-		static const Uint8 id = LeftClick;
+		static const Sint8 id = LeftClick;
 		Sint8 x,y;
 };
 
@@ -362,7 +352,7 @@ class cPCDoubleClick : public cPaqueteCliente{
 		bool serialize(cByteQueue* q);
 
 	private:
-		static const Uint8 id = DoubleClick;
+		static const Sint8 id = DoubleClick;
 		Sint8 x,y;
 };
 
@@ -374,7 +364,7 @@ class cPCAttack : public cPaqueteCliente{
 		bool serialize(cByteQueue* q);
 
 	private:
-		static const Uint8 id = Attack;
+		static const Sint8 id = Attack;
 };
 
 class cPCCombatModeToggle : public cPaqueteCliente{
@@ -385,7 +375,7 @@ class cPCCombatModeToggle : public cPaqueteCliente{
 		bool serialize(cByteQueue* q);
 
 	private:
-		static const Uint8 id = CombatModeToggle;
+		static const Sint8 id = CombatModeToggle;
 };
 
 class cPCChangeHeading : public cPaqueteCliente{
@@ -396,7 +386,7 @@ class cPCChangeHeading : public cPaqueteCliente{
 		bool serialize(cByteQueue* q);
 
 	private:
-		static const Uint8 id = ChangeHeading;// FIXME: ME CAGO.
+		static const Sint8 id = ChangeHeading;// FIXME: ME CAGO.
 		Sint8 heading;
 };
 
@@ -408,7 +398,7 @@ class cPCPickUp : public cPaqueteCliente{
 		bool serialize(cByteQueue* q);
 
 	private:
-		static const Uint8 id = PickUp;
+		static const Sint8 id = PickUp;
 };
 
 class cPCEquipItem : public cPaqueteCliente{
@@ -420,7 +410,7 @@ class cPCEquipItem : public cPaqueteCliente{
 
 	private:
 		Sint8 slot;
-		static const Uint8 id = EquipItem;
+		static const Sint8 id = EquipItem;
 };
 
 
@@ -433,7 +423,7 @@ class cPCUseItem : public cPaqueteCliente{
 
 	private:
 		Sint8 slot;
-		static const Uint8 id = UseItem;
+		static const Sint8 id = UseItem;
 };
 
 class cPCDrop : public cPaqueteCliente{
@@ -446,7 +436,7 @@ class cPCDrop : public cPaqueteCliente{
 	private:
 		Sint8 slot;
 		Sint16 amount;
-		static const Uint8 id = Drop;
+		static const Sint8 id = Drop;
 };
 
 class cPCBankEnd : public cPaqueteCliente{
@@ -456,33 +446,33 @@ class cPCBankEnd : public cPaqueteCliente{
 		
 		bool serialize(cByteQueue* q);
 	private:
-		static const Uint8 id = BankEnd;
+		static const Sint8 id = BankEnd;
 };
 
 class cPCBankDeposit : public cPaqueteCliente{
 	public:
-		cPCBankDeposit(Sint8 _slot, Uint16 _amount) : slot(_slot), amount(_amount), cPaqueteCliente(true){}
+		cPCBankDeposit(Sint8 _slot, Sint16 _amount) : slot(_slot), amount(_amount), cPaqueteCliente(true){}
 		~cPCBankDeposit(){}
 
 		bool serialize(cByteQueue* q);
 	
 	private:
 		Sint8 slot;
-		Uint16 amount;
-		static const Uint8 id = BankDeposit;
+		Sint16 amount;
+		static const Sint8 id = BankDeposit;
 };
 
 class cPCBankExtractItem : public cPaqueteCliente{
 	public:
-		cPCBankExtractItem(Sint8 _slot, Uint16 _amount) : slot(_slot), amount(_amount), cPaqueteCliente(true){}
+		cPCBankExtractItem(Sint8 _slot, Sint16 _amount) : slot(_slot), amount(_amount), cPaqueteCliente(true){}
 		~cPCBankExtractItem(){}
 
 		bool serialize(cByteQueue* q);
 	
 	private:
 		Sint8 slot;
-		Uint16 amount;
-		static const Uint8 id = BankExtractItem;
+		Sint16 amount;
+		static const Sint8 id = BankExtractItem;
 };
 
 class cPCCommerceEnd : public cPaqueteCliente{
@@ -492,34 +482,34 @@ class cPCCommerceEnd : public cPaqueteCliente{
 		
 		bool serialize(cByteQueue* q);
 	private:
-		static const Uint8 id = CommerceEnd;
+		static const Sint8 id = CommerceEnd;
 };
 
 
 class cPCCommerceBuy : public cPaqueteCliente{
 	public:
-		cPCCommerceBuy(Sint8 _slot, Uint16 _amount) : slot(_slot), amount(_amount), cPaqueteCliente(true){}
+		cPCCommerceBuy(Sint8 _slot, Sint16 _amount) : slot(_slot), amount(_amount), cPaqueteCliente(true){}
 		~cPCCommerceBuy(){}
 
 		bool serialize(cByteQueue* q);
 	
 	private:
 		Sint8 slot;
-		Uint16 amount;
-		static const Uint8 id = CommerceBuy;
+		Sint16 amount;
+		static const Sint8 id = CommerceBuy;
 };
 
 class cPCCommerceSell : public cPaqueteCliente{
 	public:
-		cPCCommerceSell(Sint8 _slot, Uint16 _amount) : slot(_slot), amount(_amount), cPaqueteCliente(true){}
+		cPCCommerceSell(Sint8 _slot, Sint16 _amount) : slot(_slot), amount(_amount), cPaqueteCliente(true){}
 		~cPCCommerceSell(){}
 
 		bool serialize(cByteQueue* q);
 	
 	private:
 		Sint8 slot;
-		Uint16 amount;
-		static const Uint8 id = CommerceSell;
+		Sint16 amount;
+		static const Sint8 id = CommerceSell;
 };
 
 class cPCThrowDices : public cPaqueteCliente{
@@ -530,7 +520,7 @@ class cPCThrowDices : public cPaqueteCliente{
 		bool serialize(cByteQueue* q);
 	
 	private:
-		static const Uint8 id = ThrowDices;
+		static const Sint8 id = ThrowDices;
 };
 
 class cPCLoginNewChar : public cPaqueteCliente{
@@ -553,7 +543,7 @@ class cPCLoginNewChar : public cPaqueteCliente{
 		Sint8 ciudad;
 		Sint8 genero;
 		Sint8 clase;	
-		static const Uint8 id = LoginNewChar;
+		static const Sint8 id = LoginNewChar;
 };
 
 class cPCTalk : public cPaqueteCliente{
@@ -564,141 +554,8 @@ class cPCTalk : public cPaqueteCliente{
 		bool serialize(cByteQueue* q);
 	
 	private:
-		static const Uint8 id = Talk;
+		static const Sint8 id = Talk;
 		std::string what;
-};
-
-
-class cPCOnline: public cPaqueteCliente{
-	public:
-		cPCOnline() : cPaqueteCliente(true){}
-		~cPCOnline(){}
-
-		bool serialize(cByteQueue* q);
-	
-	private:
-		static const Uint8 id = Online;
-};
-
-class cPCCastSpell: public cPaqueteCliente{
-	public:
-		cPCCastSpell(Sint8 _slot, Sint8 _x, Sint8 _y) : cPaqueteCliente(true), slot(_slot), x(_x), y(_y){}
-		~cPCCastSpell(){}
-
-		bool serialize(cByteQueue* q);
-	
-	private:
-		static const Uint8 id = CastSpell;
-		Sint8 slot;
-		Sint8 x;
-		Sint8 y;
-};
-
-class cPCMeditate: public cPaqueteCliente{
-	public:
-		cPCMeditate() : cPaqueteCliente(true){}
-		~cPCMeditate(){}
-
-		bool serialize(cByteQueue* q);
-	
-	private:
-		static const Uint8 id = Meditate;
-};
-
-
-class cPCGetClasesInfo: public cPaqueteCliente{
-	public:
-		cPCGetClasesInfo() : cPaqueteCliente(true){}
-		~cPCGetClasesInfo(){}
-
-		bool serialize(cByteQueue* q);
-	
-	private:
-		static const Uint8 id = GetClasesInfo;
-};
-
-class cPCGetRazasInfo: public cPaqueteCliente{
-	public:
-		cPCGetRazasInfo() : cPaqueteCliente(true){}
-		~cPCGetRazasInfo(){}
-
-		bool serialize(cByteQueue* q);
-	
-	private:
-		static const Uint8 id = GetRazasInfo;
-};
-
-class cPCGetCiudadesInfo: public cPaqueteCliente{
-	public:
-		cPCGetCiudadesInfo() : cPaqueteCliente(true){}
-		~cPCGetCiudadesInfo(){}
-
-		bool serialize(cByteQueue* q);
-	
-	private:
-		static const Uint8 id = GetCiudadesInfo;
-};
-
-class cPCGoToChar: public cPaqueteCliente{
-public:
-	cPCGoToChar(std::string _what) : cPaqueteCliente(true), what(_what){}
-	~cPCGoToChar(){}
-
-	bool serialize(cByteQueue* q);
-
-private:
-	std::string what;
-	static const Uint8 id = GoToChar;
-};
-
-class cPCRequestSkills: public cPaqueteCliente{
-	public:
-		cPCRequestSkills() : cPaqueteCliente(true){}
-		~cPCRequestSkills(){}
-
-		bool serialize(cByteQueue* q);
-	
-	private:
-		static const Uint8 id = RequestSkills;
-};
-
-class cPCModifySkills : public cPaqueteCliente{
-	public:
-		cPCModifySkills(std::vector<Sint8> *skills) : cPaqueteCliente(true), _skills(skills){}
-		~cPCModifySkills(){}
-
-		bool serialize(cByteQueue* q);
-	
-	private:
-		std::vector<Sint8> *_skills;
-		static const Uint8 id = ModifySkills;
-};
-
-class cPCWarpChar : public cPaqueteCliente{
-public:
-	cPCWarpChar(std::string _what, Uint16 _map, Uint8 _x, Uint8 _y) 
-		: cPaqueteCliente(true), what(_what), x(_x), y(_y), map(_map)
-		{}
-	~cPCWarpChar(){}
-
-	bool serialize(cByteQueue* q);
-
-private:
-	std::string what;
-	Uint8 x,y;
-	Uint16 map;
-	static const Uint8 id = WarpChar;
-};
-
-class cPCPing : public cPaqueteCliente{
-	public:
-		cPCPing() : cPaqueteCliente(true){}
-		~cPCPing(){}
-
-		bool serialize(cByteQueue* q);
-	
-	private:
-		static const Uint8 id = Ping;
 };
 
 #endif

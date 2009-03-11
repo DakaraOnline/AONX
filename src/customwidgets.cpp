@@ -20,9 +20,6 @@
 
 
 #include "customwidgets.h"
-#include "configdata.h"
-#include "clienteargentum.h"
-#include <sstream>
 
 void _TextField::draw (gcn::Graphics *graphics){
 	gcn::Color faceColor = getBackgroundColor();
@@ -59,59 +56,6 @@ void Dibujito::draw(gcn::Graphics* graphics){
 	if(img)
 		graphics->drawImage(img,0,0);
 }
-
-
-ImageButton::ImageButton() : normal(NULL),mouseover(NULL), is_mouse_over(false)
-{
-}
-
-void ImageButton::setNormalImage(std::string name)
-{
-	if(normal)
-		delete normal;
-	normal = gcn::Image::load(name);
-}
-
-void ImageButton::setMoserOverImage(std::string name)
-{
-	if(mouseover)
-		delete mouseover;
-	mouseover = gcn::Image::load(name);
-}
-
-void ImageButton::draw(gcn::Graphics *graphics)
-{
-	if(is_mouse_over)
-	{
-		if(mouseover)
-			graphics->drawImage(mouseover,0,0);
-	}else
-	{
-		if(normal)
-			graphics->drawImage(normal,0,0);
-	}
-}
-
-void ImageButton::mouseEntered(gcn::MouseEvent &mouseEvent)
-{
-	is_mouse_over = true;
-	gcn::Button::mouseEntered(mouseEvent);
-}
-
-void ImageButton::mouseExited(gcn::MouseEvent &mouseEvent)
-{
-	is_mouse_over = false;
-	gcn::Button::mouseExited(mouseEvent);
-}
-
-MacroButton::MacroButton(int number) : macro_number(number)
-{
-	std::stringstream sstemp;
-	sstemp << "MACRO " << number;
-	setActionEventId(sstemp.str());
-	addActionListener(ClienteArgentum::instancia());
-}
-
 
 
 

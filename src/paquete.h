@@ -101,7 +101,7 @@ class cPSRemoveCharDialog : public cPaqueteServidor{
 
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// Paquete: NavigateToggle
-/// Sin par�metros.
+/// Sin parámetros.
 /// @brief: Cambia el estado del personaje actual entre navegando y "no navegando".
 
 class cPSNavigateToggle : public cPaqueteServidor{
@@ -1014,7 +1014,7 @@ class cPSPauseToggle : public cPaqueteServidor{
 
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// Paquete: RainToggle
-/// Uint8 rain
+/// Sin parámetros
 /// @brief: Indica al cliente que cambie el estado de lluvia.
 
 class cPSRainToggle : public cPaqueteServidor{
@@ -1024,7 +1024,6 @@ class cPSRainToggle : public cPaqueteServidor{
                 bool unserialize(cByteQueue* q);
                 void exec();
         private:
-				Uint8 rain;
 
 };
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1105,7 +1104,7 @@ class cPSWorkRequestTarget : public cPaqueteServidor{
 /// @param: Sint8 slot
 /// @param: Sint16 objindex
 /// @param: char* nombre
-/// @param: Uint16 cantidad
+/// @param: Sint16 cantidad
 /// @param: Sint8 equipado
 /// @param: Sint16 grhindex
 /// @param: Sint8 objtype
@@ -1125,7 +1124,7 @@ class cPSChangeInventorySlot : public cPaqueteServidor{
 		Sint8 slot;
 		Sint16 objindex;
 		char nombre[256];
-		Uint16 cantidad;
+		Sint16 cantidad;
 		Sint8 equipado;
 		Sint16 grhindex;
 		Sint8 objtype;
@@ -1174,7 +1173,6 @@ class cPSChangeBankSlot : public cPaqueteServidor{
 /// Paquete: ChangeSpellSlot
 /// @param: Sint8 slot
 /// @param: Sint16 hindex (va a userhechizos(slot)?)
-/// @param: Sint32 Interval
 /// @param: char* nombre
 /// @brief: Informa al cliente el hechizo correspondiente a slot
 
@@ -1187,7 +1185,6 @@ class cPSChangeSpellSlot : public cPaqueteServidor{
         private:
 		Sint8 slot;
 		Sint16 hindex;
-		Sint32 interval;
 		char nombre[256];
 };
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1485,17 +1482,17 @@ class cPSMiniStats : public cPaqueteServidor{
 
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// Paquete: LevelUp
-/// @param: Uint16 skills
+/// @param: Sint16 skills
 /// @brief: Informa al cliente que el usuario subió de nivel y gano x skills.
 
 class cPSLevelUp : public cPaqueteServidor{
-public:
+        public:
 		cPSLevelUp();
 		~cPSLevelUp();
 		bool unserialize(cByteQueue* q);
 		void exec();
-private:
-		Uint16 skills;
+        private:
+		Sint16 skills;
 };
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -1577,7 +1574,7 @@ class cPSDiceRoll : public cPaqueteServidor{
 
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// Paquete: MeditateToggle
-/// @param: Sint8 what
+/// Sin parámetros
 /// @brief: Informa al cliente que comenzó/terminó de meditar
 
 class cPSMeditateToggle : public cPaqueteServidor{
@@ -1587,7 +1584,7 @@ class cPSMeditateToggle : public cPaqueteServidor{
                 bool unserialize(cByteQueue* q);
                 void exec();
         private:
-		Sint8 what;
+
 };
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -1625,8 +1622,8 @@ class cPSDumbNoMore : public cPaqueteServidor{
 
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /// Paquete: SendSkills
-/// @param: Uint8 skillN N for NUMSKILLS (actually 21)
-/// @param: Uint16 freeSkills
+/// @param: Sint8 skillN N for NUMSKILLS (actually 21)
+/// @warning: only unserialized, no skills info saved.
 /// @brief: Informa los skills al cliente.
 
 class cPSSendSkills : public cPaqueteServidor{
@@ -1636,8 +1633,7 @@ class cPSSendSkills : public cPaqueteServidor{
                 bool unserialize(cByteQueue* q);
                 void exec();
         private:
-				Uint8 skill[21];
-				Uint16 freeSkills;
+		Sint8 skill;
 };
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -1789,7 +1785,6 @@ class cPSShowGuildFundationForm : public cPaqueteServidor{
 /// Paquete: ParalizeOK
 /// Sin parametros
 /// @brief: Informa el estado de paralisis del usuario.
-/// 
 
 class cPSParalizeOK : public cPaqueteServidor{
         public:
@@ -1798,7 +1793,7 @@ class cPSParalizeOK : public cPaqueteServidor{
                 bool unserialize(cByteQueue* q);
                 void exec();
         private:
-		Sint8 paralizado;
+
 };
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -1945,91 +1940,5 @@ class cPSShowGMPanelForm : public cPaqueteServidor{
 
 };
 /// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-
-/// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-/// Paquete: SpellNotSpelled
-/// @param: Sint8 slot
-/// @brief: Tells the client that the last spell wasn't succefull
-
-class cPSSpellNotSpelled : public cPaqueteServidor{
-        public:
-                cPSSpellNotSpelled();
-                ~cPSSpellNotSpelled();
-                bool unserialize(cByteQueue* q);
-                void exec();
-        private:
-		Sint8 slot;
-};
-/// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-enum GeneralInfoTypes
-{
-	Ciudades = 0,
-	Razas,
-	Clases	
-};
-/// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-/// Paquete: GeneralInfo
-/// @param: Sint8 type
-/// @param: Sint8 slot
-/// @param: string text
-/// @brief: Tells the client citys, classes and "razas" information.
-
-class cPSGeneralInfo : public cPaqueteServidor{
-        public:
-                cPSGeneralInfo();
-                ~cPSGeneralInfo();
-                bool unserialize(cByteQueue* q);
-                void exec();
-        private:
-		Sint8 type;
-		Sint8 slot;
-		char text[256];
-};
-/// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-/// Paquete: Pong
-/// @brief: Pong...
-class cPSPong : public cPaqueteServidor
-{
-        public:
-                cPSPong();
-                ~cPSPong();
-                bool unserialize(cByteQueue* q);
-                void exec();
-};
-
-/// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-class cPSConsoleMessageN : public cPaqueteServidor
-{
-public:
-	cPSConsoleMessageN();
-	~cPSConsoleMessageN();
-
-	bool unserialize(cByteQueue* q);
-	void exec();
-
-private:
-	Uint16 n;
-	Uint8 FontIndex;
-};
-
-/// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-class cPSConsoleMessageWithParams : public cPaqueteServidor
-{
-public:
-	cPSConsoleMessageWithParams();
-	~cPSConsoleMessageWithParams();
-
-	bool unserialize(cByteQueue* q);
-	void exec();
-private:
-	Uint16 n;
-	char params[1024];
-	Uint8 FontIndex;
-};
-/// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
 
 #endif

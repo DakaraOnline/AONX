@@ -25,20 +25,13 @@
 
 #include "SDL.h"
 
+
+#include "textrenderer.h"
 #include "guichan.hpp"
 #include "class_types.h"
 
 #include "color.h"
 #include "rect.h"
-
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
-
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 
 namespace ga {
 	
@@ -107,46 +100,19 @@ namespace ga {
 	class Image
 	{
 	public:
-		Image() : _rect(0, 0, 0, 0), _texture(0), _valid(false) {}
-		~Image() {unloadImage();}
+		Image() : _rect(0, 0, 0, 0) {}
+		virtual ~Image() {}
 		
-		inline const Rect& getRect() const { return _rect; }
-
-		/**
-		 * Carga la textura desde el archivo 
-		 */
-		void loadImage(std::string path);
+		const Rect& getRect() const throw() { return _rect; }
 		
-		/**
-		 * Devuelve si la textura es valida
-		 */
-		bool textureHandleValid() const { return _valid; }
-		
-		/**
-		 * Devuelve el handle de OpenGL de la textura
-		 */
-		inline GLuint getTextureHandle() const { return _texture; }
-		
-		/**
-		 * Devuelve las coordenadas reales para dibujar la textura
-		 */
-		inline const GLfloat* getTexCoords() const { return _texcoord; }
+		virtual void setColorKey( const Color & c, bool active = true ) = 0;
+		virtual void setAlpha( unsigned int alpha, bool active = true ) = 0;
+		virtual void displayFormat() = 0;
 		
 	protected:
 		Rect _rect;
-		void unloadImage();
-	
-		void checkSurface()
-		{
-			if ( ! _valid )
-				throw GraphicsAdapterException("ImageSDL::checkSurface -> _surface == NULL ! ");
-		}
-	
-		GLuint _texture;
-		bool _valid;
-		GLfloat _texcoord[4];
 	};
-
+		
 	/**
 	* @brief Clase base abstracta para representar un adaptador grafico 
 	* @author alejandro santos <alejolp@gmail.com>
@@ -157,42 +123,57 @@ namespace ga {
 	class GraphicsAdapter
 	{
 		public:
-		GraphicsAdapter( SDL_Surface* surface , GuichanLoader_ptr guichan);
-
-		virtual ~GraphicsAdapter();
-		
-		virtual void drawPoint( int x, int y, const Color & c );
-		virtual void drawLine( int x1, int y1, int x2, int y2, const Color & c );
-		virtual void drawRect( const Rect & r, const Color & c );
+			GraphicsAdapter();
+			virtual ~GraphicsAdapter();
 	
-		virtual Image_ptr loadImage(std::string imagePath);
-
-		virtual void drawImage(int img_id, Image* img, const Rect & src, const Point & dest, bool ck , unsigned char alpha, short int angle = 0, bool light = false, int* rgb_list = NULL);
-		virtual void drawImage(int img_id, Image* img, const Point & dest, bool ck , unsigned char alpha, short int angle = 0, bool light = false, int* rgb_list = NULL);
-
-		virtual void drawText(gcn::ImageFont* font, const std::string txt, const Point & dest);
-		virtual void drawText(const std::wstring txt, const Point & dest);
-
-		virtual void beginFrame();
-		virtual void endFrame();
-		virtual void setBaseLight(unsigned char r, unsigned char g, unsigned char b);
-
-	private:
-
-		void enter2dMode();
-		void leave2dMode();
-		//TODO: este INLINE no hace nada, pero deberia.
-		inline void drawImageLow(int img_id, Image *imgogl, GLfloat min_x, GLfloat min_y, GLfloat max_x, GLfloat max_y, int w, int h, const Point & dest,  bool ck , unsigned char alpha, short int angle, bool light, int* rgb_list);
-
-	private:
-
-		SDL_Surface* _surface;
-		GuichanLoader_ptr guichan;
-		unsigned char base_r;
-		unsigned char base_g;
-		unsigned char base_b;
-
-		GLuint lists[50000];
+			/// dibuja un punto de color %c indicado por las coordenadas x e y
+			virtual void drawPoint( int x, int y, const Color & c ) = 0;
+		
+			/// Dibuja un punto de color c en el punto p
+			void drawPoint( const Point & p, const Color & c ) {
+				drawPoint( p._x, p._y, c );
+			}
+		
+			/// Dibuja una linea
+			virtual void drawLine( int x1, int y1, int x2, int y2, const Color & c ) = 0;
+		
+			/// Dibuja una linea
+			void drawLine( const Point & p1, const Point & p2, const Color & c ) {
+				drawLine( p1._x, p1._y, p2._x, p2._y, c );
+			}
+		
+			/// Dibuja un rectangulo
+			virtual void drawRect( const Rect & r, const Color & c ) = 0;
+			
+			/// Dibuja un rectangulo
+			void drawRect( int x, int y, int w, int h, const Color & c ) {
+				drawRect( Rect( x, y, w, h ), c );
+			}
+		
+			/// Crea una nueva imagen. Tener presente que devuelve un %linked_ptr<Image> 
+			virtual Image_ptr loadImage(std::string imagePath) = 0;
+			
+			/** @brief Muestra una porcion de una imagen
+			 *
+			 * Muestra una porcion de una imagen (indicada por el Rect src), en
+			 * la posicion indicada por el Point.
+			 */
+			virtual void drawImage(Image_ptr img, const Rect & src, const Point & dest) = 0;
+			
+			/// Muestra una imagen completa en la posicion indicada
+			virtual void drawImage(Image_ptr img, const Point & dest) = 0;
+			
+			/// Dibuja texto en la pantalla
+			virtual void drawText(gcn::ImageFont* font, const std::string txt, const Point & dest) = 0;
+			
+			/// Dibuja texto en la pantalla
+			virtual void drawText(const std::wstring txt, const Point & dest) = 0;
+			
+			/// Inicia un nuevo frame de dibujo
+			virtual void beginFrame() = 0;
+			
+			/// Finaliza el frame actual
+			virtual void endFrame() = 0;
 	};
 	
 	

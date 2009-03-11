@@ -33,6 +33,7 @@ public:
 	static std::string GetStdBasePath();
 	static std::string GetPath(std::string dirName);
 	static bool Fullscreen;
+	static bool Sdl;
 	static bool Mute;
 private:
 	static std::string BasePath;

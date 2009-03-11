@@ -24,7 +24,7 @@
 #include <guichan.hpp>
 #include "customwidgets.h"
 
-class vmain : public gcn::Window
+class vmain : public gcn::Window, public gcn::ActionListener
 {
 public:
 	vmain();
@@ -32,7 +32,8 @@ public:
 	void draw (gcn::Graphics *graphics);
 	void drawBorder (gcn::Graphics *graphics) {}
 	void setLoginWindow(gcn::Window* w){ login=w; }
-	std::string getHost(){ return "testserver.aonx.com.ar"; }
+	void action(const gcn::ActionEvent& actionEvent);
+	std::string getHost(){ return host->getText(); }
 	int getPort();
 private:
 	gcn::Image* img;
@@ -42,12 +43,6 @@ private:
 	bool login_added;
 	_TextField* puerto;
 	_TextField* host;
-
-	ImageButton* login_button;
-	ImageButton* create_button;
-	ImageButton* servers_button;
-	ImageButton* options_button;
-	ImageButton* exit_button;
 };
 
 #endif

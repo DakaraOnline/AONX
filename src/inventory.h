@@ -30,13 +30,13 @@
 
 class InventorySlot : public gcn::Button{
 	public:
-		InventorySlot() : grhindex(0),grh_img(NULL){} //by valgrind check 1
+		//InventorySlot() : grhindex(0),grh_img(NULL),Button("-"){}
 		void draw (gcn::Graphics *graphics);
 		void drawBorder (gcn::Graphics *graphics){ if(visible) gcn::Button::drawBorder(graphics);}
 		void set_grhindex(Sint16 grhindex);
 		Sint16	objindex;
 		std::string objname;	
-		Uint32	objamount;
+		Sint32	objamount;
 		bool	isequipped;
 		Sint32	valor;
 		Sint16	objtype;
@@ -70,7 +70,7 @@ class Inventory : public gcn::Window, public gcn::ActionListener{
 	private:
 		std::vector<InventorySlot*> _slots;
 		int size;
-		gcn::TextBox *label;
+		gcn::Label *label;
 		int active;
 		gcn::Image* img;
 		gcn::Button* up;

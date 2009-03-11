@@ -53,16 +53,7 @@ namespace ao
 				grh.frame++;
 				// Se acabo la animacion ? Reinicio
 				if ( grh.frame >= grhDataItem->numFrames )
-				{
 					grh.frame = 0;
-					if(grh.looptimes>0)
-					{
-						grh.looptimes--;
-						if(grh.looptimes==0)
-							grh.stop();
-					}
-					
-				}
 			}
 			
 			// Obtengo el GrhDataItem

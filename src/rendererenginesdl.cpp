@@ -18,48 +18,69 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <iostream>
 #include <exception>
-#include <stdlib.h>
 
-#include "configdata.h"
 #include "class_types.h"
-#include "clienteargentum.h"
-#include <string>
+
+#include "graphicsadaptersdl.h"
+#include "rendererenginesdl.h"
+
+#include "imagemanager.h"
+#include "configdata.h"
+#include "grhdata.h"
+#include "grhmanager.h"
+
 using namespace std;
 
-
-int main(int argc, char *argv[])
+RendererEngineSDL::RendererEngineSDL()
+: RendererEngine()
 {
-	if (argc > 1)
+	cout <<"Initializing SDL." << endl;
+	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
 	{
-		for(int i = 1;i<argc;i++)
-		{
-			string temp(argv[i]);
-			if(temp=="-f")
-			{
-				ConfigData::Fullscreen=true;
-			}else if(temp=="-s")
-			{
-				ConfigData::Sdl=true;
-			}else if(temp=="-m")
-			{
-				ConfigData::Mute=true;
-			}else
-			{
-				ConfigData::SetBasePath(temp);
-			}
-		}
-		
+		cout <<"Could not initialize SDL: " << SDL_GetError() << endl;
+		SDL_Quit();
 	}
 
-	ClienteArgentum::instancia()->run();
+	int width = 800;
+	int height = 600;
+	
+	//  | SDL_FULLSCREEN
+//	_screen = SDL_SetVideoMode( 800, 600, 16, SDL_HWSURFACE | SDL_DOUBLEBUF );
+	int flags = SDL_SWSURFACE;
+	if(ConfigData::Fullscreen)
+		flags|=SDL_FULLSCREEN;
 
-	SDL_Quit();	
-	return EXIT_SUCCESS;
+	_screen = SDL_SetVideoMode( width, height, 0, flags );
+	if ( ! _screen )
+		throw std::exception();
+
+	SDL_EnableUNICODE(1);
+	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
+
+	GuichanLoader_ptr guichan(new GuichanLoader());
+	guichan->loadSDL( _screen );
+
+	RendererEngine::initializeGA( ga::GraphicsAdapter_ptr( new ga::GraphicsAdapterSDL ( _screen, guichan ) ) );
+	RendererEngine::initializeGuichan( guichan );
 }
+
+
+RendererEngineSDL::~RendererEngineSDL()
+{
+}
+
+void RendererEngineSDL::beginFrame()
+{
+	// La version SDL dibuja un rectangulo negro en toda la pantalla para 
+	// borrar lo anterior.
+	RendererEngine::beginFrame();
+}
+void RendererEngineSDL::endFrame()
+{
+	RendererEngine::endFrame();
+	SDL_Flip(_screen);
+}
+
+

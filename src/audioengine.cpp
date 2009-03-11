@@ -24,31 +24,9 @@
 #include <iostream>
 #include <sstream>
 #include "configdata.h"
-#include <stdio.h>
 #include <string.h>
 
-int audioengine::actual_theme = 0;
-Mix_Music* audioengine::music = NULL;
 
-void audioengine::end_play()
-{
-	
-	Mix_FreeMusic(music);
-	std::stringstream theme;
-	actual_theme++;
-	
-	if(actual_theme>3) //TODO: hardcode
-		actual_theme=1;
-	theme << ConfigData::GetPath("audio") << actual_theme << ".ogg";
-	music = Mix_LoadMUS(theme.str().c_str());
-	if(music != NULL) 
-	{
-		if(Mix_PlayMusic(music, 1) == -1) //Ad infinitum :D
-		{
-			//TODO:BLA BLA
-		}
-	}
-}
 void audioengine::init()
 {
 	if(ConfigData::Mute) return;
@@ -58,7 +36,7 @@ void audioengine::init()
 		std::cout << " No andubo =(" << std::endl;
 	}
 	std::cout << " casiii";
-	int audio_rate = 44100;
+	int audio_rate = 22050;//Otro dia poner 44khz, rocks :D
 	Uint16 audio_format = AUDIO_S16SYS;
 	int audio_channels = 2;
 	int audio_buffers = 4096;
@@ -66,31 +44,25 @@ void audioengine::init()
 		//TODO: ble bli blo blu
 		std::cout << " pero no llegó :-(" << std::endl;
 	}
-	Mix_AllocateChannels(32);//No deberian faltar canales hay que revisar los reportes.
 	std::cout << " Y ADENTROOO!" << std::endl;
 	memset(sounds,0,sizeof(Mix_Chunk*)*255);
 	initialized=true;
 }
 
-void audioengine::play_music()
+void audioengine::play_music(std::string que)
 {
 	if(ConfigData::Mute) return;
 	if(!initialized) return;
-	std::stringstream theme;
-	actual_theme = 1;
-	theme << ConfigData::GetPath("audio") << actual_theme << ".ogg";
-
-	music = Mix_LoadMUS(theme.str().c_str());
-	Mix_HookMusicFinished(audioengine::end_play);
-	
-	if(music != NULL) 
+	Mix_Music *music;
+	music = Mix_LoadMUS(que.c_str());
+	if(music == NULL) 
 	{
-		if(Mix_PlayMusic(music, 1) == -1) 
-		{
-			//TODO:BLA BLA
-		}
+		//TODO:BLA
 	}
-	Mix_VolumeMusic(MIX_MAX_VOLUME/5);
+	if(Mix_PlayMusic(music, -1) == -1) //Ad infinitum :D
+	{
+		//TODO:BLA BLA
+	}
 }
 
 void audioengine::play_wav(Uint32 que)
@@ -106,9 +78,7 @@ void audioengine::play_wav(Uint32 que)
  		sounds[que] = Mix_LoadWAV(wav.str().c_str());
 	}
 
-	if(Mix_PlayChannel(-1, sounds[que], 0)==-1) {
-		printf("Mix_PlayChannel: %s\n",Mix_GetError());
-	}
+	Mix_PlayChannel(-1, sounds[que], 0);
 }
 
 audioengine::~audioengine(){
@@ -116,7 +86,4 @@ audioengine::~audioengine(){
 		if(sounds[i])
 			Mix_FreeChunk(sounds[i]);
 	}
-	Mix_HaltMusic();
-	Mix_FreeMusic(music);
-	Mix_CloseAudio();
 }

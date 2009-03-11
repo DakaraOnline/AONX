@@ -435,32 +435,6 @@ class cServerFactory{
 		PaqueteServidor_ptr ShowGMPanelForm(){
 			return PaqueteServidor_ptr(new cPSShowGMPanelForm());
 		}
-
-		PaqueteServidor_ptr SpellNotSpelled()
-		{
-			return PaqueteServidor_ptr(new cPSSpellNotSpelled());
-		}
-
-		PaqueteServidor_ptr GeneralInfo()
-		{
-			return PaqueteServidor_ptr(new cPSGeneralInfo());
-		}
-
-		PaqueteServidor_ptr Pong()
-		{
-			return PaqueteServidor_ptr(new cPSPong());
-		}
-
-
-		PaqueteServidor_ptr ConsoleMessageN()
-		{
-			return PaqueteServidor_ptr(new cPSConsoleMessageN());
-		}
-
-		PaqueteServidor_ptr ConsoleMessageWithParams()
-		{
-			return PaqueteServidor_ptr(new cPSConsoleMessageWithParams());
-		}
 };
 
 #endif

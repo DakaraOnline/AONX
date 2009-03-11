@@ -40,12 +40,11 @@ vcreation::vcreation() : img(NULL), img_clase(NULL),lastclase(-1){
 	Text_Nombre->setBorderSize(0);
 	add(Text_Nombre,240,79);
 
-	setRaza(1,"Cargando...");
-	/*setRaza(1,"Humano");
-	setRaza(2,"Elfo");
-	setRaza(3,"Elfo Oscuro");
-	setRaza(4,"Gnomo");
-	setRaza(5,"Enano");*/
+	List_Raza.setElementAt(1,"Humano");
+	List_Raza.setElementAt(2,"Elfo");
+	List_Raza.setElementAt(3,"Elfo Oscuro");
+	List_Raza.setElementAt(4,"Gnomo");
+	List_Raza.setElementAt(5,"Enano");
 	Combo_Raza = new gcn::DropDown(&List_Raza);
 	Combo_Raza->setWidth(184);
 	Combo_Raza->setHeight(16);
@@ -53,8 +52,8 @@ vcreation::vcreation() : img(NULL), img_clase(NULL),lastclase(-1){
 	
 	add(Combo_Raza,395,123);
 
-	setGenero(1,"Hombre");
-	setGenero(2,"Mujer");
+	List_Genero.setElementAt(1,"Hombre");
+	List_Genero.setElementAt(2,"Mujer");
 	Combo_Genero = new gcn::DropDown(&List_Genero);
 	Combo_Genero->setWidth(184);
 	Combo_Genero->setHeight(16);
@@ -62,23 +61,22 @@ vcreation::vcreation() : img(NULL), img_clase(NULL),lastclase(-1){
 	Combo_Genero->setBackgroundColor(gcn::Color(0,0,0,255));
 	add(Combo_Genero,396,153);
 
-	setClase(1,"Cargando...");
-	/*setClase(1,"Mago");
-	setClase(2,"Clerigo");
-	setClase(3,"Guerrero");
-	setClase(4,"Asesino");
-	setClase(5,"Ladron");
-	setClase(6,"Bardo");
-	setClase(7,"Druida");
-	setClase(8,"Bandido");
-	setClase(9,"Paladin");
-	setClase(10,"Cazador");
-	setClase(11,"Pescador");
-	setClase(12,"Herrero");
-	setClase(13,"Leñador");
-	setClase(14,"Minero");
-	setClase(15,"Carpintero");
-	setClase(16,"Pirata");*/
+	List_Clase.setElementAt(1,"Mago");
+	List_Clase.setElementAt(2,"Clerigo");
+	List_Clase.setElementAt(3,"Guerrero");
+	List_Clase.setElementAt(4,"Asesino");
+	List_Clase.setElementAt(5,"Ladron");
+	List_Clase.setElementAt(6,"Bardo");
+	List_Clase.setElementAt(7,"Druida");
+	List_Clase.setElementAt(8,"Bandido");
+	List_Clase.setElementAt(9,"Paladin");
+	List_Clase.setElementAt(10,"Cazador");
+	List_Clase.setElementAt(11,"Pescador");
+	List_Clase.setElementAt(12,"Herrero");
+	List_Clase.setElementAt(13,"Leñador");
+	List_Clase.setElementAt(14,"Minero");
+	List_Clase.setElementAt(15,"Carpintero");
+	List_Clase.setElementAt(16,"Pirata");
 	Combo_Clase = new gcn::DropDown(&List_Clase);
 	Combo_Clase->setWidth(184);
 	Combo_Clase->setHeight(16);
@@ -89,11 +87,10 @@ vcreation::vcreation() : img(NULL), img_clase(NULL),lastclase(-1){
 	Combo_Clase->setBackgroundColor(gcn::Color(0,0,0,255));
 	add(Combo_Clase,396,182);
 
-	setCiudad(1,"Cargando...");
-	/*setCiudad(2,"Nix");
-	setCiudad(3,"Banderbille");
-	setCiudad(1,"Ullathorpe");
-	setCiudad(4,"Lindos");*/
+	List_Ciudad.setElementAt(2,"Nix");
+	List_Ciudad.setElementAt(3,"Banderbille");
+	List_Ciudad.setElementAt(1,"Ullathorpe");
+	List_Ciudad.setElementAt(4,"Lindos");
 	Combo_Ciudad = new gcn::DropDown(&List_Ciudad);
 	Combo_Ciudad->setWidth(175);
 	
@@ -173,25 +170,27 @@ vcreation::vcreation() : img(NULL), img_clase(NULL),lastclase(-1){
 		add(Skill_down[i],524,214+i*(int)(302/20.9));
 		add(Skill_up[i],556,214+i*(int)(302/20.9));
 	}
-
-	ClienteArgentum::instancia()->attributes().AddObserver(this);
 }
 
-void vcreation::update(Attributes *d){
-
-	Label_Fuerza->setCaption(to_string((*d)[0].get()));
-
-	Label_Agilidad->setCaption(to_string((*d)[1].get()));
-
-	Label_Inteligencia->setCaption(to_string((*d)[2].get()));
-
-	Label_Constitucion->setCaption(to_string((*d)[4].get()));
-
-	Label_Carisma->setCaption(to_string((*d)[3].get()));
+void vcreation::setDados(int fuerza,int agilidad,int inteligencia,int constitucion,int carisma){
+	std::stringstream convert;
+	convert << fuerza;
+	Label_Fuerza->setCaption(convert.str());
+	convert.str("");
+	convert << agilidad;
+	Label_Agilidad->setCaption(convert.str());
+	convert.str("");
+	convert << inteligencia;
+	Label_Inteligencia->setCaption(convert.str());
+	convert.str("");
+	convert << constitucion;
+	Label_Constitucion->setCaption(convert.str());
+	convert.str("");
+	convert << carisma;
+	Label_Carisma->setCaption(convert.str());
 }
 
 vcreation::~vcreation(){
-	ClienteArgentum::instancia()->attributes().DelObserver(this);
 	delete Combo_Raza;
 	delete Combo_Clase;
 	delete Combo_Genero;
@@ -228,31 +227,46 @@ void vcreation::draw (gcn::Graphics *graphics){
 }
 
 void vcreation::action(const gcn::ActionEvent& actionEvent){
-
+	std::stringstream panfleto;
+	std::string temp;
 	int n;
 	int n2;
 	int t;
 	if(actionEvent.getId().substr(0,2)=="SD")
 	{
-		n = to_number(actionEvent.getId().substr(2,2));
-		t = to_number(Label_Restantes->getCaption());
-		n2 = to_number(Skill[n]->getCaption());
+		panfleto << actionEvent.getId().substr(2,2) << " ";
+		panfleto >> n;
+		panfleto << Label_Restantes->getCaption() << " ";
+		panfleto >> t;	
+		panfleto << Skill[n]->getCaption() << " ";
+		panfleto >> n2;
 		if(n2>0){
 			t++;
 			n2--;
-			Label_Restantes->setCaption(to_string(t));
-			Skill[n]->setCaption(to_string(n2));
+			panfleto.str("");
+			panfleto << t;
+			Label_Restantes->setCaption(panfleto.str());
+			panfleto.str("");
+			panfleto << n2;
+			Skill[n]->setCaption(panfleto.str());
 		}
 	}else if(actionEvent.getId().substr(0,2)=="SU")
 	{
-		n = to_number(actionEvent.getId().substr(2,2));
-		t = to_number(Label_Restantes->getCaption());
-		n2 = to_number(Skill[n]->getCaption());
+		panfleto << actionEvent.getId().substr(2,2) << " ";
+		panfleto >> n;
+		panfleto << Label_Restantes->getCaption() << " ";
+		panfleto >> t;	
+		panfleto << Skill[n]->getCaption() << " ";
+		panfleto >> n2;
 		if(t>0){
 			t--;
 			n2++;
-			Label_Restantes->setCaption(to_string(t));
-			Skill[n]->setCaption(to_string(n2));
+			panfleto.str(std::string());
+			panfleto << t;
+			Label_Restantes->setCaption(panfleto.str());
+			panfleto.str(std::string());
+			panfleto << n2;
+			Skill[n]->setCaption(panfleto.str());
 		}
 	}else if(actionEvent.getId()=="CONTINUAR")
 	{
@@ -303,7 +317,11 @@ const std::string vcreation::getNombre()
 void vcreation::getSkills(Sint8* skills)
 {
 	for(int i=0;i<21;i++){
-		skills[i]=to_number(Skill[i]->getCaption());
+		std::stringstream convert;
+		convert << Skill[i]->getCaption();
+		int a;
+		convert >> a;
+		skills[i]=a;
 	}
 }
 
@@ -360,33 +378,10 @@ std::string vcreation::getImageFromClase()
 			return "pirata.jpg";
 			break;
 	}
-	return "";
 }
 
 void vcreation::resetDados()
 {
-	// ToDo: cambie setDados por update del observer, ver esto.
-	// setDados(0,0,0,0,0);
+	setDados(0,0,0,0,0);
 }
-
-void vcreation::setCiudad(int num, std::string nom)
-{
-	List_Ciudad.setElementAt(num, nom);
-}
-
-void vcreation::setClase(int num, std::string nom)
-{
-	List_Clase.setElementAt(num, nom);
-}
-
-void vcreation::setRaza(int num, std::string nom)
-{
-	List_Raza.setElementAt(num, nom);
-}
-
-void vcreation::setGenero(int num, std::string nom)
-{
-	List_Genero.setElementAt(num,nom);
-}
-
 

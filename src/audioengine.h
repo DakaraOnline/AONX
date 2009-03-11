@@ -29,16 +29,11 @@ class audioengine{
 		audioengine() : initialized(false){}
 		~audioengine();
 		void init();
-		void play_music();
+		void play_music(std::string que);
 		void play_wav(Uint32 que);
-
 	private:
 		bool initialized;
 		Mix_Chunk *sounds[255];
-
-		static Mix_Music *music;
-		static int actual_theme;
-		static void end_play();
 };
 
 #endif

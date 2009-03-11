@@ -62,7 +62,7 @@ class MainGui : public gcn::Window{
 		void setLevel(const Uint32 x);
 		void setOro(const Uint32 x);
 		void setNombre(std::string s){ name->setCaption(s);}
-		void map_changed();
+
 		
 	private:
 		
@@ -72,11 +72,6 @@ class MainGui : public gcn::Window{
 		gcn::Image* img;
 		bool visible;
 		void drawMiniMap(gcn::Graphics *graphics);
-		gcn::Image* minimap_buffer;
-
-		gcn::Button* inv_t;
-		gcn::Button* sp_t;
-		gcn::Button* st_t;
 
 		gcn::Label* name;
 		gcn::Label* lvl;

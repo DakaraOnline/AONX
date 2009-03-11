@@ -57,6 +57,27 @@ void GuichanLoader::loadOpenGL( int width, int height )
 	std::cout << " OK" << std::endl;
 }
 
+void GuichanLoader::loadSDL( SDL_Surface* screen )
+{
+	std::cout << "GuichanLoader::loadSDL..." ;
+	
+	_width = screen->w;
+	_height = screen->h;
+	
+	imageLoader = new gcn::SDLImageLoader();
+	gcn::Image::setImageLoader(imageLoader);
+	
+	gcn::SDLGraphics* sdlgraphics = new gcn::SDLGraphics();
+	sdlgraphics->setTarget( screen );
+	
+	graphics = sdlgraphics;
+	
+	input = new gcn::SDLInput();
+
+	loadTopContainer();
+	
+	std::cout << " OK" << std::endl;
+}
 
 void GuichanLoader::loadTopContainer()
 {

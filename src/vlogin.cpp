@@ -29,7 +29,7 @@ vlogin::vlogin() : Window("Login"){
 	tuser->setText("");
 	tpass = new gcn::TextField("             ");
 	tpass->adjustSize();
-	tpass->setText("");
+	tpass->setText("123");
 	boton = new gcn::Button("OK");
 	boton->setActionEventId("LOGIN");
 	boton->addActionListener(ClienteArgentum::instancia());

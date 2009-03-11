@@ -49,24 +49,13 @@ class cComunicador{
 		void Use(Sint8 slot);
 		void Drop(Sint8 slot, Sint16 amount);
 		void EndBank();
-		void BankDeposit(Sint8 slot, Uint16 amount);
-		void BankExtractItem(Sint8 slot, Uint16 amount);
+		void BankDeposit(Sint8 slot, Sint16 amount);
+		void BankExtractItem(Sint8 slot, Sint16 amount);
 		void EndCommerce();
-		void CommerceBuy(Sint8 slot, Uint16 amount);
-		void CommerceSell(Sint8 slot, Uint16 amount);
+		void CommerceBuy(Sint8 slot, Sint16 amount);
+		void CommerceSell(Sint8 slot, Sint16 amount);
 		void Dados();
 		void Talk(std::string what);
-		void Online();
-		void Magia(Sint8 slot, Sint8 x, Sint8 y);
-		void Meditar();
-		void GetClasesInfo();
-		void GetRazasInfo();
-		void GetCiudadesInfo();
-		void GoToChar(std::string who);
-		void RequestSkills();
-		void ModifySkills(std::vector<Sint8> *skills);
-		void WarpChar(std::string, Uint16 map, Uint8 x, Uint8 y);
-		void Ping();
 
 		void Recibir();
 		void Enviar();
@@ -184,12 +173,7 @@ class cComunicador{
 			ShowSOSForm,		// MSOS
 			ShowMOTDEditionForm,	// ZMOTD
 			ShowGMPanelForm,	// ABPANEL
-			UserNameList,		// LISTUSU
-			SpellNotSpelled,
-			GeneralInfo,
-			Pong,
-			ConsoleMessageN,
-			ConsoleMessageWithParams
+			UserNameList		// LISTUSU
 		};
 };
 

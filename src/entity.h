@@ -27,7 +27,6 @@
 #include "bodydata.h"
 #include "fxanim.h"
 #include "fonts.h"
-#include "particulas.h"
 
 
 
@@ -66,9 +65,6 @@ namespace ao
 		Offset getHeadOffset() { return body.headOffset; }
 		Offset getOffset() { return Offset(ox,oy); }
 
-
-		void setFx(BodyData_ptr bodyData, int index, int loops);
-
 		void decOffset(int howmuch);
 
 		GrhBasic & getBodyGrh() { return body.anim[_heading]; }
@@ -76,8 +72,6 @@ namespace ao
 		GrhBasic & getCascoGrh() { return casco.anim[_heading]; }
 		GrhBasic & getArmaGrh() { return arma.anim[_heading]; }
 		GrhBasic & getEscudoGrh() { return escudo.anim[_heading]; }
-		GrhBasic & getFxGrh();
-		Offset getFxOffset();
 		
 		bool isMoving() { return moving; }
 
@@ -92,11 +86,6 @@ namespace ao
 		std::string getChat();
 		gcn::ImageFont* getChatFont() { return chat_font; }
 
-		void setPart(int n);
-
-		GrupoDeParticulas *getPart()
-		{ return part; }
-
 	private:
 		
 		void startMoving();
@@ -105,17 +94,12 @@ namespace ao
 		Heading _heading;
 		Pos _pos;
 		ao::MapFile_ptr _map;
-
-		BodyData_ptr _bodyData;
 		
 		BodyData::BodyAnim body;
 		BodyData::HeadAnim head;
 		BodyData::HeadAnim casco;
 		BodyData::WeaponAnim arma;
 		BodyData::BasicAnim escudo;
-		BodyData::FxAnim fxx;
-
-		GrupoDeParticulas *part;
 		
 		bool usandoArma;
 

@@ -40,7 +40,7 @@ public:
 	~ImageManager();
 
 	/// Dado un ID de imagen, devuelve la imagen
-	ga::Image* getImage( Uint32 num);
+	ga::Image_ptr getImage( Uint32 num , bool color_key);
 	
 protected:
 	
