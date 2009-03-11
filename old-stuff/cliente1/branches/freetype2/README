@@ -1,0 +1,25 @@
+
+Cliente de Argentum Online hecho en C++ & SDL
+
+Autor: Alejandro Santos <alejolp@gmail.com>
+
+COMPILACION
+===========
+
+Se necesita:
+- Compilador C++ junto a las librerias estandar C++
+- Librerias de SDL, SDL_image y SDL_ttf-2
+
+Procedimiento:
+
+$ ./configure
+$ make
+
+TODO: Faltan mas cosas ...
+
+CONVENCIONES DE CODIGO
+======================
+
+ - Reducir las dependencias entre headers, que un #include
+   involucre la menor cantidad de #includes indirectos posibles
+
