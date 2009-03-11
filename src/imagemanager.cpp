@@ -28,7 +28,7 @@
 #include "graphicsadapter.h"
 
 ImageManager::ImageManager( ga::GraphicsAdapter_ptr graphic )
-	: _graphic( graphic ), _imgs( 300 )
+	: _graphic( graphic ), _imgs( 100 )
 {
 }
 
@@ -37,14 +37,14 @@ ImageManager::~ImageManager()
 {
 }
 
-ga::Image* ImageManager::getImage( Uint32 num )
+ga::Image_ptr ImageManager::getImage( Uint32 num, bool color_key )
 {
 	if ( num >= _imgs.size() )
 		_imgs.resize( ( num * 3 ) / 2 + 1 );
 	
 	if ( _imgs[num].img.get() )
 	{
-		// Por ahora no se usa _imgs[num].hit();
+		_imgs[num].hit();
 	}
 	else
 	{
@@ -52,6 +52,8 @@ ga::Image* ImageManager::getImage( Uint32 num )
 		imgPath << ConfigData::GetPath("graficos") << num << ".png";
 		
 		ga::Image_ptr img = _graphic->loadImage( imgPath.str() );
+		if(color_key)
+			img->setColorKey( ga::Color( 0, 0, 0 ) );
 
 		_imgs[num].img = img;
 		_imgs[num].init();
@@ -61,5 +63,5 @@ ga::Image* ImageManager::getImage( Uint32 num )
 		_history.push( num );
 	}
 	
-	return _imgs[num].img.get();
+	return _imgs[num].img;
 }

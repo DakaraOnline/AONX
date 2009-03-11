@@ -20,40 +20,30 @@
 #ifndef CLIENTEARGENTUM_H
 #define CLIENTEARGENTUM_H
 
-//STL
-#include <vector>
-
-//BASE
-#include "class_types.h"
-class Skills;
-class Attributes;
-
-//GUI
-#include "SDL.h"
 #include <guichan.hpp>
+#include <vector>
+#include "SDL.h"
+#include "class_types.h"
+#include "comunicador.h"
+#include "sock.h"
 #include "bodydata.h"
-#include "hechizos.h"
-#include "maingui.h"
-#include "inventory.h"
-#include "mensajes.h"
+
 
 class vmain;
 class vcreation;
-class vestadisticas;
+#include "maingui.h"
+
+
+#include "bytequeue.h"
+
+#include "inventory.h"
+
 class vpassword;
+
 class vlogin;
 class vdrop;
 
-
-//NET
-#include "comunicador.h"
-#include "sock.h"
-#include "bytequeue.h"
-
-
-//AUDIO
 class audioengine;
-
 
 /**
  @mainpage Cliente C++ - Documentacion Tecnica
@@ -71,18 +61,11 @@ class audioengine;
 class ClienteArgentum : public gcn::ActionListener, public csocket::EventListener
 {
 	public:
-
-		enum eClientStatus
-		{
-			Welcome = 0,
-			Login,
-			NewChar,
-			Logged
-		};
-
 		ClienteArgentum();
 		~ClienteArgentum();
 
+		/// Ejecuta el rendering loop del juego
+		void run();
 
 		static ClienteArgentum* instancia(){
 			if(_instancia==0){
@@ -90,10 +73,6 @@ class ClienteArgentum : public gcn::ActionListener, public csocket::EventListene
 			}
 			return _instancia;
 		}
-
-		/// Ejecuta el rendering loop del juego
-		void run();
-
 
 		ao::MapFile_ptr ActualMap(){
 			return _map;
@@ -117,79 +96,32 @@ class ClienteArgentum : public gcn::ActionListener, public csocket::EventListene
 		/// Event listener del socket
 		void socket_onEvent(csocket* sock, SocketEventsTypes ev_type, int param1);
 
-		/// Avisa al cliente que se logueï¿½
+		/// Avisa al cliente que se logueó
 		void set_logged(bool a);
 
 		/// FIXME
 		std::vector<ao::Entity_ptr> _entities;
 
+		/// FIXME?
+		Inventory UserInventory;
+		Inventory NPCInventory;
+		Inventory BankInventory;
 		
 		ao::GrhDataFile_ptr get_grhData(){ return _grhData;};
 
 		bool hayTecho(){ return bajoTecho; }
 
-
-		/// FIXME hacer una funcion para acceder a esto.
-		/// Engine grafico, encargado de dibujar mapas, objetos, chars, etc.
-		RendererEngine_ptr _engine;
+		///NOTE: No se si convendría que cliente argentum tenga copia de los datos y EL se encargue de setearlos en la ventana. Mirame despues :D.
+		MainGui* get_ministats() { return main_gui; }
 
 		/// TODO: mejorame?
 		audioengine* audio() { return aengine; }
 
-		/// Guichan Loader TODO sacame de aca despuï¿½s
-		GuichanLoader_ptr _guichan;	
+		/// Guichan Loader TODO sacame de aca después
+		GuichanLoader_ptr _guichan;		
 
 		void Dados(int fuerza,int agilidad,int inteligencia,int constitucion,int carisma);
-		void Razas(int n, std::string i);
-		void Ciudades(int n, std::string i);
-		void Clases(int n, std::string i);
-		/// Avisa al cliente que esta paralizado
-		void setParalizado(bool b);
-		/// Avisa al cliente que esta meditando
-		void setMeditando(bool b);
-
-		Skills& skills()
-		{ return *_skills; }
-
-		Attributes& attributes()
-		{ return *_attributes; }
-
-		void ModifySkills(std::vector<Sint8> *s, int free);
-
-
-		///NOTE: No se si convendrï¿½a que cliente argentum tenga copia de los datos y EL se encargue de setearlos en la ventana. Mirame despues :D.
-		MainGui* get_ministats() { return main_gui; }
-
-		/// FIXME?
-		Inventory UserInventory;
-		Inventory NPCInventory;
-		Inventory BankInventory;
-		Hechizos VHechizos;
-
-		Msgs Mensajes;
-
-		eClientStatus getStatus(){ return status; };
-
-		void Pong();
-
-		unsigned int getLatency() { return latency; }
-
-		unsigned int getTestParticle()
-		{ return test_particle;}
-
-		unsigned int getTestFx()
-		{ return test_fx;}
-
-
 	private:
-
-
-		unsigned int test_particle;
-		unsigned int test_fx;
-
-		unsigned int sent_ping;
-		unsigned int recv_pong;
-		unsigned int latency;
 
 		// Metodos privados
 		
@@ -230,24 +162,26 @@ class ClienteArgentum : public gcn::ActionListener, public csocket::EventListene
 		void try_buy();
 
 		void try_sell();
-
-
 		
 	private:
 		
 		// Variables privadas
 
-		static ClienteArgentum* _instancia;
+		bool bajoTecho;
 
-		eClientStatus status;
+		static ClienteArgentum* _instancia;
 
 		/// Adaptador grafico, engargado de dibujar puntos, lineas e imagenes
 		ga::GraphicsAdapter_ptr _graphic;
-	
+		
+		/// Engine grafico, encargado de dibujar mapas, objetos, chars, etc.
+		RendererEngine_ptr _engine;
+		
 		/// Administrador de imagenes
 		ImageManager_ptr _imgMan;
-
-
+		
+		
+		
 		/// Boolean que indica si el engine debe seguir ejecutandose
 		bool _run;
 		
@@ -269,21 +203,12 @@ class ClienteArgentum : public gcn::ActionListener, public csocket::EventListene
 
 		cComunicador* comu;
 
-
 		/// Indica el indice de el personaje del ususario
 		int currentChar;
 
-		Skills *_skills;
-
-		Attributes *_attributes;
-
-		bool bajoTecho;
+		bool logged;
 
 		bool ondialog;
-
-		bool paralizado;
-
-		bool meditando;
 
 		/// Velocidad de movimiento y variable de chequeo
 		Uint32 walk_speed;
@@ -292,7 +217,6 @@ class ClienteArgentum : public gcn::ActionListener, public csocket::EventListene
 
 		vlogin *login_window;
 
-		bool login_window_added;
 
 		vmain *main_window;
 
@@ -304,6 +228,8 @@ class ClienteArgentum : public gcn::ActionListener, public csocket::EventListene
 
 		MainGui *main_gui;
 
+		bool new_char;
+
 		gcn::TextField* input_console;
 		
 		bool input_console_up;
@@ -313,15 +239,6 @@ class ClienteArgentum : public gcn::ActionListener, public csocket::EventListene
 		bool showing_password_window;
 
 		void command_parse(std::string what);
-
-		SDL_Cursor* cflecha;
-
-		SDL_Cursor* ccruz;
-
-		int using_spell;
-
-		vestadisticas *ve;
-
 };
 
 #endif

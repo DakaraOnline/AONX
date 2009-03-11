@@ -40,6 +40,7 @@ void audioengine::end_play()
 	if(actual_theme>3) //TODO: hardcode
 		actual_theme=1;
 	theme << ConfigData::GetPath("audio") << actual_theme << ".ogg";
+	
 	music = Mix_LoadMUS(theme.str().c_str());
 	if(music != NULL) 
 	{
@@ -66,7 +67,7 @@ void audioengine::init()
 		//TODO: ble bli blo blu
 		std::cout << " pero no llegó :-(" << std::endl;
 	}
-	Mix_AllocateChannels(32);//No deberian faltar canales hay que revisar los reportes.
+	Mix_AllocateChannels(32);
 	std::cout << " Y ADENTROOO!" << std::endl;
 	memset(sounds,0,sizeof(Mix_Chunk*)*255);
 	initialized=true;
@@ -85,7 +86,7 @@ void audioengine::play_music()
 	
 	if(music != NULL) 
 	{
-		if(Mix_PlayMusic(music, 1) == -1) 
+		if(Mix_PlayMusic(music, 1) == -1) //Ad infinitum :D
 		{
 			//TODO:BLA BLA
 		}

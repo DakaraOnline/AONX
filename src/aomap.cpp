@@ -21,8 +21,6 @@
 #include <fstream>
 
 #include "aomap.h"
-#include "imagemanager.h"
-#include "grhmanager.h"
 
 namespace ao 
 {
@@ -40,7 +38,7 @@ namespace ao
 	#error TODO : Aun sin implementar !! Los archivos de mapas son LITTLE ENDIAN
 	#endif
 	
-	void MapFile::loadMapFile( std::string mapFile, ao::GrhManager_ptr grhmgr, ImageManager_ptr imgmgr)
+	void MapFile::loadMapFile( std::string mapFile )
 	{
 		std::ifstream f;
 		
@@ -82,8 +80,6 @@ namespace ao
 					if ( bFlags & (1 << k) ) {
 						bin_read( f, & tmpInt );
 						tile.graphic[k].init(tmpInt);
-						//TODO FIXME : primer intento de precarga de graficos.
-						imgmgr->getImage(grhmgr->getNextFrame(tile.graphic[k]).fileNum);
 					} else {
 						tile.graphic[k].init(0);
 					}

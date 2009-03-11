@@ -236,10 +236,10 @@ namespace gcn
         glEnable(GL_TEXTURE_2D);
 
         // Check if blending already is enabled
-     //   if (!mAlpha)
-      //  { TODO: ver porque esto falla aveces.... 
+        if (!mAlpha)
+        {
             glEnable(GL_BLEND);
-       // }
+        }
 
         // Draw a textured quad -- the image
         glBegin(GL_QUADS);
@@ -258,10 +258,10 @@ namespace gcn
         glDisable(GL_TEXTURE_2D);
 
         // Don't disable blending if the color has alpha
-      /*  if (!mAlpha)
+        if (!mAlpha)
         {
             glDisable(GL_BLEND);
-        }*/
+        }
     }
 
     void OpenGLGraphics::drawPoint(int x, int y)

@@ -23,16 +23,11 @@
 #include "basictypes.h"
 #include "class_types.h"
 
-#include "grhmanager.h"
 #include "graphicsadapter.h"
 #include "imagemanager.h"
 #include "guichanloader.h"
 #include "inventory.h"
 #include <list>
-#include "particulas.h"
-#include "SDL.h"
-
-
 /**
 	@author alejandro santos <alejolp@gmail.com>
 */
@@ -48,19 +43,14 @@ public:
 	
 	void setMap( ao::MapFile_ptr map );
 	
-	bool raining;
-
-	virtual void render( int incX, int incY, bool fullrender = false);
+	
+	virtual void render( int incX, int incY, int offX, int offY );
 	virtual void beginFrame();
 	virtual void endFrame();
 
 	float getFPS() { return _lastFpsCount; }
 	
 	void initialize( ao::GrhDataFile_ptr grhData, ao::BodyData_ptr bodyData );
-	void setCurrentLight(unsigned char r, unsigned char g, unsigned char b);
-	void setTargetLight(unsigned char r, unsigned char g, unsigned char b);
-
-	ao::GrhManager_ptr getGrhManager(){return _grhManager;}
 
 protected:
 	
@@ -72,20 +62,20 @@ protected:
 		_guichan = guichan;
 	}
 	
-	inline void renderGrh( ao::GrhDataItem & grhDataItem, Offset &basePixel, bool center, bool color_key = true, unsigned char alpha = 255  );
-	inline void renderGrh( ao::GrhBasic & grh, Offset basePixel, bool center, bool color_key = true, unsigned char alpha = 255 );
+	void renderGrh( ao::GrhDataItem & grhDataItem, Offset basePixel, bool center, bool color_key = true, unsigned char alpha = 255  );
+	void renderGrh( ao::GrhBasic & grh, Offset basePixel, bool center, bool color_key = true, unsigned char alpha = 255 );
 	
-	inline void renderLayerTile( int layerNum, ao::MapTile & tile, Offset basePixel, bool center, bool color_key = true, unsigned char alpha = 255 );
-	inline void renderObjLayer( ao::MapTile & tile, Offset basePixel, bool center );
-	inline void renderEntityLayer( ao::MapTile & tile, Offset basePixel );
+	void renderLayerTile( int layerNum, ao::MapTile & tile, Offset basePixel, bool center, bool color_key = true, unsigned char alpha = 255 );
+	void renderObjLayer( ao::MapTile & tile, Offset basePixel, bool center );
+	void renderEntityLayer( ao::MapTile & tile, Offset basePixel );
 	
-	inline void renderTextos();
-
-
+	void renderTextos();
 	
 	virtual void renderTecho( ao::MapTile & tile, Offset basePixel );
 
 protected:
+	
+	virtual void initFont() = 0;
 	
 	ga::GraphicsAdapter_ptr _graphic;
 	ImageManager_ptr _imgMan;
@@ -95,14 +85,11 @@ protected:
 	ao::BodyData_ptr _bodyData;
 	GuichanLoader_ptr _guichan;
 
+	TextRenderer_ptr _tr;
 private:
-
-	SDL_Surface* _screen;
 
 	void calcularFPS();
 
-
-	unsigned char alpha_techos;
 	// Variables para el contador de FPS
 	int _frameCounter;
 	int _last_walk;
@@ -120,16 +107,6 @@ private:
 			ga::Point donde;	
 	};
 	std::list<text_to_be_rendered*> textos;
-
-	unsigned char current_light[3];
-	unsigned char target_light[3];
-
-	void calcLight();
-	GrupoDeParticulas* grupo;
-	GrupoDeParticulas* grupo2;
-	GrupoDeParticulas* grupo3;
-	GrupoDeParticulas* grupo4;
-	
 };
 
 #endif

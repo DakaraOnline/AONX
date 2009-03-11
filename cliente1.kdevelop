@@ -26,17 +26,17 @@
       <useactivetarget>true</useactivetarget>
     </general>
     <run>
-      <mainprogram>/home/piluex/aonx/debug/src/cliente1</mainprogram>
+      <mainprogram/>
       <terminal>true</terminal>
       <directoryradio>build</directoryradio>
       <runarguments>
         <cliente1/>
       </runarguments>
-      <programargs>-m</programargs>
-      <globaldebugarguments>-m</globaldebugarguments>
-      <globalcwd>/home/piluex/aonx/</globalcwd>
-      <useglobalprogram>true</useglobalprogram>
-      <autocompile>true</autocompile>
+      <programargs/>
+      <globaldebugarguments/>
+      <globalcwd>/home/piluex/aonx/debug</globalcwd>
+      <useglobalprogram>false</useglobalprogram>
+      <autocompile>false</autocompile>
       <autoinstall>false</autoinstall>
       <autokdesu>false</autokdesu>
       <envvars/>
@@ -70,12 +70,6 @@
         <envvar value="1" name="WANT_AUTOCONF_2_5" />
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
       </envvars>
-      <abortonerror>true</abortonerror>
-      <runmultiplejobs>false</runmultiplejobs>
-      <numberofjobs>1</numberofjobs>
-      <dontact>false</dontact>
-      <makebin/>
-      <prio>0</prio>
     </make>
   </kdevautoproject>
   <kdevdoctreeview>
@@ -170,7 +164,7 @@
       <namespaceAliases>std=_GLIBCXX_STD;__gnu_cxx=std</namespaceAliases>
       <processPrimaryTypes>true</processPrimaryTypes>
       <processFunctionArguments>true</processFunctionArguments>
-      <preProcessAllHeaders>true</preProcessAllHeaders>
+      <preProcessAllHeaders>false</preProcessAllHeaders>
       <parseMissingHeaders>false</parseMissingHeaders>
       <resolveIncludePaths>true</resolveIncludePaths>
       <alwaysParseInBackground>true</alwaysParseInBackground>
@@ -232,7 +226,6 @@
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
-      <raiseGDBOnStart>false</raiseGDBOnStart>
     </general>
     <display>
       <staticmembers>false</staticmembers>

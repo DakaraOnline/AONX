@@ -33,7 +33,12 @@ public:
 	static std::string GetStdBasePath();
 	static std::string GetPath(std::string dirName);
 	static bool Fullscreen;
+	static bool Sdl;
 	static bool Mute;
+	
+	static std::string GetTTFontFileName() { 
+		return std::string("SansSerif.ttf");
+	}
 private:
 	static std::string BasePath;
 

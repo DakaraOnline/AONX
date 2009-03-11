@@ -36,6 +36,7 @@ public:
 	~GuichanLoader();
 
 	void loadOpenGL( int width, int height );
+	void loadSDL( SDL_Surface* screen );
 	
 	void pushInput( SDL_Event & event ) {
 		input->pushInput( event );

@@ -127,18 +127,13 @@ cComunicador::cComunicador(csocket* asocket,cByteQueue* ain, cByteQueue* aout) :
 	paquetes[ShowSOSForm]=&cServerFactory::ShowSOSForm;
 	paquetes[ShowMOTDEditionForm]=&cServerFactory::ShowMOTDEditionForm;
 	paquetes[ShowGMPanelForm]=&cServerFactory::ShowGMPanelForm;
-	paquetes[SpellNotSpelled]=&cServerFactory::SpellNotSpelled;
-	paquetes[GeneralInfo]=&cServerFactory::GeneralInfo;
-	paquetes[Pong]=&cServerFactory::Pong;
-	paquetes[ConsoleMessageN] = &cServerFactory::ConsoleMessageN;
-	paquetes[ConsoleMessageWithParams] = &cServerFactory::ConsoleMessageWithParams;
 	//cout << "voy por: " << SendSkills << " y son: " << ShowGMPanelForm << endl;
 }
 
 void cComunicador::Recibir(){
 	
-	char tmp[8192];
-	int len = socket->recibir(tmp, 8192);
+	char tmp[2048];
+	int len = socket->recibir(tmp, 2048);
 	#ifdef DEBUG
 	cout << "len: " << len << endl;
 	#endif
@@ -249,14 +244,14 @@ void cComunicador::EndBank(){
 	Enviar();
 }
 
-void cComunicador::BankDeposit(Sint8 slot, Uint16 amount){
+void cComunicador::BankDeposit(Sint8 slot, Sint16 amount){
 	PaqueteCliente_ptr paquete(new cPCBankDeposit(slot,amount));
 	paquete->serialize(out);
 	Enviar();
 }
 
 
-void cComunicador::BankExtractItem(Sint8 slot, Uint16 amount){
+void cComunicador::BankExtractItem(Sint8 slot, Sint16 amount){
 	PaqueteCliente_ptr paquete(new cPCBankExtractItem(slot,amount));
 	paquete->serialize(out);
 	Enviar();
@@ -269,13 +264,13 @@ void cComunicador::EndCommerce(){
 	Enviar();
 }
 
-void cComunicador::CommerceSell(Sint8 slot, Uint16 amount){
+void cComunicador::CommerceSell(Sint8 slot, Sint16 amount){
 	PaqueteCliente_ptr paquete(new cPCCommerceSell(slot,amount));
 	paquete->serialize(out);
 	Enviar();
 }
 
-void cComunicador::CommerceBuy(Sint8 slot, Uint16 amount){
+void cComunicador::CommerceBuy(Sint8 slot, Sint16 amount){
 	PaqueteCliente_ptr paquete(new cPCCommerceBuy(slot,amount));
 	paquete->serialize(out);
 	Enviar();
@@ -301,72 +296,3 @@ void cComunicador::Online(){
 	Enviar();
 }
 
-void cComunicador::Magia(Sint8 slot, Sint8 x, Sint8 y)
-{
-	PaqueteCliente_ptr paquete(new cPCCastSpell(slot,x,y));
-	paquete->serialize(out);
-	Enviar();
-}
-
-void cComunicador::Meditar(){
-	PaqueteCliente_ptr paquete(new cPCMeditate);
-	paquete->serialize(out);
-	Enviar();
-}
-
-void cComunicador::GetClasesInfo()
-{
-	PaqueteCliente_ptr paquete(new cPCGetClasesInfo);
-	paquete->serialize(out);
-	Enviar();
-}
-
-void cComunicador::GetRazasInfo()
-{
-	PaqueteCliente_ptr paquete(new cPCGetRazasInfo);
-	paquete->serialize(out);
-	Enviar();
-}
-
-void cComunicador::GetCiudadesInfo()
-{
-	PaqueteCliente_ptr paquete(new cPCGetCiudadesInfo);
-	paquete->serialize(out);
-	Enviar();
-}
-
-void cComunicador::GoToChar(std::string who)
-{
-	PaqueteCliente_ptr paquete(new cPCGoToChar(who));
-	paquete->serialize(out);
-	Enviar();
-}
-
-
-void cComunicador::RequestSkills()
-{
-	PaqueteCliente_ptr paquete(new cPCRequestSkills);
-	paquete->serialize(out);
-	Enviar();
-}
-
-void cComunicador::ModifySkills(std::vector<Sint8> *skills)
-{
-	PaqueteCliente_ptr paquete(new cPCModifySkills(skills));
-	paquete->serialize(out);
-	Enviar();
-}
-
-void cComunicador::WarpChar(std::string who, Uint16 map, Uint8 x, Uint8 y)
-{
-	PaqueteCliente_ptr paquete(new cPCWarpChar(who,map,x,y));
-	paquete->serialize(out);
-	Enviar();
-}
-
-void cComunicador::Ping()
-{
-	PaqueteCliente_ptr paquete(new cPCPing);
-	paquete->serialize(out);
-	Enviar();
-}

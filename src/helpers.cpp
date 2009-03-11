@@ -22,7 +22,7 @@
 
 #include <cstdlib>
 #include <cstring>
-#include <sstream>
+
 
 int GetRandomNumber(int min, int max)
 {
@@ -85,20 +85,5 @@ bool ValidateCommon(const char* what)
 }
 
 
-int to_number(const std::string &s)
-{
-	std::stringstream ss;
-	ss << s;
-	int ret;
-	ss >> ret;
-	return ret;
-}
-
-std::string to_string(int n)
-{
-	std::stringstream ss;
-	ss << n;
-	return ss.str();
-}
 
 

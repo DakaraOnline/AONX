@@ -42,22 +42,6 @@ class NoDrawButton : public gcn::Button
 		void drawBorder(gcn::Graphics *graphics){}
 };
 
-class ImageButton : public gcn::Button
-{
-	public:
-		ImageButton();
-		void draw(gcn::Graphics *graphics);
-		void drawBorder(gcn::Graphics *graphics){}
-		void setNormalImage(std::string name);
-		void setMoserOverImage(std::string name);
-		void mouseEntered (gcn::MouseEvent &mouseEvent);
-		void mouseExited (gcn::MouseEvent &mouseEvent);
-	private:
-		gcn::Image *normal;
-		gcn::Image *mouseover;
-		bool is_mouse_over;
-};
-
 class Dibujito : public gcn::Widget
 {
 	public:
@@ -67,15 +51,6 @@ class Dibujito : public gcn::Widget
 		void drawBorder(gcn::Graphics *graphics){}
 	private:
 		gcn::Image* img;
-};
-
-class MacroButton : public gcn::Button
-{
-	public:
-		MacroButton(int number);
-		
-	private:
-		int macro_number;
 };
 
 #endif

@@ -45,13 +45,9 @@ void InventorySlot::draw (gcn::Graphics *graphics){
 	tmp.str(std::string());
 	if(grh_img){
 		graphics->drawImage(grh_img,0,0);
-		unsigned int losk = objamount / 1000;
-		unsigned int resto = objamount % 1000;
-		if(losk>9)
+		if(show_prices)
 		{
-			tmp << losk << "K";
-			if(resto>0)
-				tmp << "+";
+			tmp << "$" << valor;
 		}else
 		{
 			tmp << objamount;
@@ -76,12 +72,12 @@ Inventory::Inventory(int _size, std::string hide_event, gcn::ActionListener* el_
 {
 
 	img=0;//revisame
-	setSize(195,210);
+	setSize(180,180);
 	setBaseColor(gcn::Color(255, 150, 200, 127));
 	int colsPerRow=5;
 	int actX,actY;
-	int baseX=9;
-	int baseY=24;
+	int baseX=5;
+	int baseY=22;
 	for(int i=0 ;i<size; i++){
 		_slots[i]= new InventorySlot;
 		_slots[i]->grh_img=0;
@@ -91,13 +87,11 @@ Inventory::Inventory(int _size, std::string hide_event, gcn::ActionListener* el_
 			_slots[i]->visible=false;
 		}
 		_slots[i]->set_grhindex(0);
-		_slots[i]->valor = 0;
-		actX=baseX + (i%colsPerRow) * 36;
-		actY=baseY + (i/colsPerRow) * 35;
+		actX=baseX + (i%colsPerRow) * 34;
+		actY=baseY + (i/colsPerRow) * 34;
 		_slots[i]->setSize(32,32);
-		//_slots[i]->setBaseColor(gcn::Color(0x99, 0xDF, 0xF5, 65));
-		_slots[i]->setBaseColor(gcn::Color(0x99, 0xDF, 0xF5, 0));
-		///Esto tendrï¿½a que tener un patron base que se pase x el constructor (y agregar action listeners) o hacer virtual la funcion de action, nose, REVISAR. =). :D
+		_slots[i]->setBaseColor(gcn::Color(0x99, 0xDF, 0xF5, 65));
+		///Esto tendría que tener un patron base que se pase x el constructor (y agregar action listeners) o hacer virtual la funcion de action, nose, REVISAR. =). :D
 		std::stringstream bid;
 		bid.str(std::string());
 		bid << "boton " << i;
@@ -105,30 +99,23 @@ Inventory::Inventory(int _size, std::string hide_event, gcn::ActionListener* el_
 		_slots[i]->addActionListener((gcn::ActionListener*)this);
 		add(_slots[i],actX,actY);
 	}
-	label= new gcn::TextBox("Nada");
-	label->setSize(177,34);
-	label->setOpaque(false);
-	label->setEditable(false);
-	label->setBorderSize(0);
-//	label->setAlignment(gcn::Graphics::CENTER);
-	
-	up=new gcn::Button(" ");
-	down= new gcn::Button(" ");
+	label= new gcn::Label("Nada");
+	label->setSize(160,15);
+	label->setAlignment(gcn::Graphics::CENTER);
+	up=new gcn::Button("u");
+	down= new gcn::Button("d");
 	up->setActionEventId("UP");
-	up->setBaseColor(gcn::Color(0x99, 0xDF, 0xF5, 0));
-	down->setBaseColor(gcn::Color(0x99, 0xDF, 0xF5, 0));
+	up->setBaseColor(gcn::Color(0x99, 0xDF, 0xF5, 127));
+	down->setBaseColor(gcn::Color(0x99, 0xDF, 0xF5, 127));
 	down->setActionEventId("DOWN");
 	up->addActionListener(this);
-	up->setBorderSize(0);
 	down->addActionListener(this);
-	down->setBorderSize(0);
-	add(label,8,169);
-	add(up,7,4);
-	add(down,28,4);
-	hide = new gcn::Button(" ");
-	hide->setBaseColor(gcn::Color(0x99, 0xDF, 0xF5, 0));
-	hide->setBorderSize(0);
-	add(hide,170,5);
+	add(label,5,162);
+	add(up,2,162);
+	add(down,159,162);
+	hide = new gcn::Button("x");
+	hide->setBaseColor(gcn::Color(0x99, 0xDF, 0xF5, 80));
+	add(hide,158,1);
 	hide->setHeight(14);
 	hide->setActionEventId(hide_event);
 	hide->addActionListener(el_coso);
@@ -183,20 +170,7 @@ void Inventory::action(const gcn::ActionEvent& actionEvent){
 		ev >> temp;
 		int a;
 		ev >> a;
-		std::string what= _slots[a]->objname;
-		std::stringstream amount;
-		
-		
-		if(_slots[a]->show_prices)
-		{
-			std::stringstream precio;
-			precio << "\n$";
-			precio << _slots[a]->valor;
-			what.append(precio.str());
-		}
-		amount << what << " - " << _slots[a]->objamount;
-		label->setText(amount.str());
-		label->setSize(177,34);
+		label->setCaption(_slots[a]->objname);
 		active=a;
 	}
 }

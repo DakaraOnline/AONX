@@ -120,7 +120,7 @@ namespace ao
 		~MapFile();
 	
 		/// Abre un nuevo mapa (nuevo formato compacto 0.11)
-		void loadMapFile( std::string mapFile , ao::GrhManager_ptr grhmgr, ImageManager_ptr imgmgr);
+		void loadMapFile( std::string mapFile );
 		
 		/**
 		@brief Devuelve un tile del mapa

@@ -19,12 +19,11 @@
  ***************************************************************************/
 
 #include <iostream>
-#include <exception>
 
 #include "rendererengine.h"
+
 #include "graphicsadapter.h"
 #include "imagemanager.h"
-
 #include "grhdata.h"
 #include "grhmanager.h"
 #include "aomap.h"
@@ -35,103 +34,10 @@
 #include "entity.h"
 #include "clienteargentum.h"
 #include "console.h"
-#include "particulas.h"
-
-
-#include "class_types.h"
-
-#include <GL/gl.h>
-#include <GL/glu.h>
-
-#include "console.h"
-
-#include "clienteargentum.h"
-#include "configdata.h"
-
-using namespace std;
 
 RendererEngine::RendererEngine()
-: alpha_techos(255),_lastFpsCount( 0.0 ), _frameCounter( 0 ), _last_walk( SDL_GetTicks() ), _lastCheck( 0 )
+: _lastFpsCount( 0.0 ), _frameCounter( 0 ), _last_walk( SDL_GetTicks() ), _lastCheck( 0 )
 {
-
-	const SDL_VideoInfo* info = NULL;
-	int width = 0;
-	int height = 0;
-	int bpp = 0;
-	int flags = 0;
-	
-	cout <<"Initializing SDL + OpenGL." << endl;
-	
-	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
-	{
-		cout <<"Could not initialize SDL: " << SDL_GetError() << endl;
-		SDL_Quit();
-	}
-	
-	cout << "Obteniendo informacion de video..." << endl;
-	info = SDL_GetVideoInfo( );
-
-	if( !info ) {
-		/* This should probably never happen. */
-		cout << "SDL_GetVideoInfo: " << SDL_GetError() << endl;
-		SDL_Quit();
-	}
-
-	SDL_EnableUNICODE(1);
-	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
-
-	width = 800;
-	height = 600;
-	bpp = info->vfmt->BitsPerPixel;
-
-    /*
-	* Now, we want to setup our requested
-	* window attributes for our OpenGL window.
-	* We want *at least* 5 bits of red, green
-	* and blue. We also want at least a 16-bit
-	* depth buffer.
-	*
-	* The last thing we do is request a double
-	* buffered window. '1' turns on double
-	* buffering, '0' turns it off.
-	*
-	* Note that we do not use SDL_DOUBLEBUF in
-	* the flags to SDL_SetVideoMode. That does
-	* not affect the GL attribute state, only
-	* the standard 2D blitting setup.
-    */
-	
-	cout << "Configurando OpenGL..." << endl;
-
-	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
-	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
-	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-	SDL_GL_SetAttribute( SDL_GL_SWAP_CONTROL, 1 ); //Vsync
-	
-	flags = SDL_HWSURFACE | SDL_OPENGL | SDL_HWACCEL;// | SDL_FULLSCREEN; // | SDL_HWSURFACE | SDL_FULLSCREEN;
-
-	if(ConfigData::Fullscreen)
-		flags|=SDL_FULLSCREEN;
-
-	cout << "Iniciando modo de video..." ;
-
-	_screen = SDL_SetVideoMode( width, height, bpp, flags);
-	if( ! _screen ) {
-		cout << "SDL_SetVideoMode: " << SDL_GetError() << endl;
-		SDL_Quit();
-	}
-
-	int dummy;
-	SDL_GL_GetAttribute( SDL_GL_RED_SIZE, &dummy );
-	cout << " red_size: " << dummy << " # OK!" << endl;
-
-	GuichanLoader_ptr guichan(new GuichanLoader());
-	guichan->loadOpenGL( width, height );
-	
-	RendererEngine::initializeGA( ga::GraphicsAdapter_ptr( new ga::GraphicsAdapter ( _screen, guichan ) ) );
-	RendererEngine::initializeGuichan( guichan );
 }
 
 RendererEngine::~RendererEngine()
@@ -147,21 +53,25 @@ void RendererEngine::initialize( ao::GrhDataFile_ptr grhData, ao::BodyData_ptr b
 	_imgMan = ImageManager_ptr( new ImageManager( _graphic ) );
 	
 	_grhManager = ao::GrhManager_ptr( new ao::GrhManager( _grhData ) );
-	grupo = new GrupoDeParticulas(8);
-	grupo2 = new GrupoDeParticulas(8);
-	//grupo3 = new GrupoDeParticulas(1);
-
 	
+	std::stringstream fontPath(std::string(""));
+	fontPath << ConfigData::GetPath("fonts") << ConfigData::GetTTFontFileName();
+	
+	_tr = TextRenderer_ptr( new TextRenderer(fontPath.str().c_str(), 10) );
+
+	initFont();
 }
 
 void RendererEngine::beginFrame()
 {
 	_graphic->beginFrame();
+	
+	_graphic->drawText( _tr, "Hola", ga::Point(100, 100));
 }
+
 void RendererEngine::endFrame()
 {
 	_graphic->endFrame();
-	SDL_GL_SwapBuffers();
 	calcularFPS();
 }
 
@@ -171,14 +81,21 @@ void RendererEngine::calcularFPS()
 	Uint32 curTime = SDL_GetTicks();
 	if ( curTime - _lastCheck > 1000 )
 	{
-
+		// Se calcula dividiendo la cantidad de frames dibujados desde el ultimo icheck
+		// por el tiempo que paso. Dado que ese tiempo son milisegundos y yo quiero
+		// "Frames por Segundo ", multiplico por 1000 arriba (en vez de dividir por 
+		// 1000 abajo, que es lo mismo).
 		_lastFpsCount = (float)( _frameCounter * 1000 ) / ( curTime - _lastCheck );
 		std::stringstream pepe;
-		pepe << ClienteArgentum::instancia()->getLatency() << " ms " << (int)_lastFpsCount << " FPS";
+		pepe << _lastFpsCount;
 		_fps_string = pepe.str();
 		// Reinicio el contador de frames junto con el momento del check actual
 		_frameCounter = 0;
 		_lastCheck = curTime;
+		//TODO: esto deber�a estar en el titulo de la consola o texto onscreen.
+		//NOTE: lo saque porque me molestaba tanto TANTO.
+		//Consola::buffer << "FPS: " << _lastFpsCount << std::endl;
+		//std::cout << "FPS: " << _fps_string << std::endl;
 	}
 	_frameCounter++;
 }
@@ -188,30 +105,24 @@ void RendererEngine::setMap( ao::MapFile_ptr map )
 	_map = map;
 }
 
-inline void RendererEngine::renderGrh( ao::GrhDataItem & grhDataItem, Offset& basePixel, bool center, bool color_key, unsigned char alpha )
+void RendererEngine::renderGrh( ao::GrhDataItem & grhDataItem, Offset basePixel, bool center, bool color_key, unsigned char alpha )
 {
-	ga::Image* img = _imgMan->getImage( grhDataItem.fileNum);
+	ga::Image_ptr img = _imgMan->getImage( grhDataItem.fileNum , color_key);
 	
 	if ( center )
 	{
 		// Santos Calculos Magicos, Batman !!
-		if(grhDataItem.centerTweakx==-1)
-		{//Lo calculamos una sola vez dentro de una variable del mismo tamanio asi es mas rapido las proximas.
-			grhDataItem.centerTweakx = grhDataItem.pixelWidth / 2 - 16;
-			grhDataItem.centerTweaky = grhDataItem.pixelHeight - 32;
-		}
-
-		basePixel.x -= grhDataItem.centerTweakx;
-		basePixel.y -= grhDataItem.centerTweaky;
+		basePixel.x -= grhDataItem.pixelWidth / 2 - 16;
+		basePixel.y -= grhDataItem.pixelHeight - 32;
 	}
-	//APESTA Q SE HAGA UN RECT, RECORDAR DE BORRAR A LA MIERDA
-	_graphic->drawImage( grhDataItem.myID,
+	
+	_graphic->drawImage( 
 			img, ga::Rect( grhDataItem.sx, grhDataItem.sy, 
 				       grhDataItem.pixelWidth, grhDataItem.pixelHeight ), 
 			ga::Point( basePixel.x, basePixel.y ), color_key, alpha );
 }
 
-inline void RendererEngine::renderGrh( ao::GrhBasic & grh, Offset basePixel, bool center, bool color_key , unsigned char alpha)
+void RendererEngine::renderGrh( ao::GrhBasic & grh, Offset basePixel, bool center, bool color_key , unsigned char alpha)
 {
 	//
 	// Esta funcion se encarga de animar automaticamente el GrhBasic
@@ -219,18 +130,18 @@ inline void RendererEngine::renderGrh( ao::GrhBasic & grh, Offset basePixel, boo
 
 	if ( grh.isValid() )
 	{
-		ao::GrhDataItem & grhDataItem = _grhManager->getNextFrame( grh );	
+		ao::GrhDataItem & grhDataItem = _grhManager->getNextFrame( grh );
 		renderGrh( grhDataItem, basePixel, center, color_key, alpha );
 	}
 }
 
-inline void RendererEngine::renderLayerTile( int layerNum, ao::MapTile & tile, Offset basePixel, bool center, bool color_key, unsigned char alpha)
+void RendererEngine::renderLayerTile( int layerNum, ao::MapTile & tile, Offset basePixel, bool center, bool color_key, unsigned char alpha)
 {
 	tile.graphic[layerNum].started=true;
 	renderGrh( tile.graphic[layerNum], basePixel, center, color_key, alpha );
 }
 
-inline void RendererEngine::renderObjLayer( ao::MapTile & tile, Offset basePixel, bool center )
+void RendererEngine::renderObjLayer( ao::MapTile & tile, Offset basePixel, bool center )
 {
 	tile.obj.started=true;
 	renderGrh( tile.obj, basePixel, center );
@@ -239,7 +150,7 @@ inline void RendererEngine::renderObjLayer( ao::MapTile & tile, Offset basePixel
 
 #include <list>
 #define CHARS_PER_LINE 25
-inline std::list<std::string> wrap(std::string s, int &n)
+std::list<std::string> wrap(std::string s, int &n)
 {
 	std::list<std::string> lista;
 	lista.clear();
@@ -257,7 +168,7 @@ inline std::list<std::string> wrap(std::string s, int &n)
 	return lista;
 }
 
-inline void RendererEngine::renderEntityLayer( ao::MapTile & tile, Offset basePixel )
+void RendererEngine::renderEntityLayer( ao::MapTile & tile, Offset basePixel )
 {
 	ao::Entity* ent = tile.ent;
 	Offset basePixelHead = basePixel + ent->getHeadOffset();
@@ -267,12 +178,6 @@ inline void RendererEngine::renderEntityLayer( ao::MapTile & tile, Offset basePi
 	renderGrh( ent->getCascoGrh(), basePixelHead+ent->getOffset(), true );
 	renderGrh( ent->getArmaGrh(), basePixel+ent->getOffset(), true );
 	renderGrh( ent->getEscudoGrh(), basePixel+ent->getOffset(), true );
-	renderGrh( ent->getFxGrh(), basePixel+ent->getOffset()+ent->getFxOffset(), true,true,127 );
-	if(ent->getPart())
-	{
-		ent->getPart()->render(basePixel.x+ent->getOffset().x+ent->getFxOffset().x,basePixel.y+ent->getOffset().y+ent->getFxOffset().y,_graphic,_grhManager, _imgMan);
-	}
-
 	if(!ent->getChat().empty())
 	{
 		int lines;
@@ -288,7 +193,7 @@ inline void RendererEngine::renderEntityLayer( ao::MapTile & tile, Offset basePi
 		}
 	}
 
-	_graphic->drawText(Fonts::sans_12_blue(), ent->getNombre(), ga::Point(basePixel.x+ent->getOffset().x+16-(ent->getNombre().size()*7/2),basePixel.y+ent->getOffset().y+32));//TODO: esto apesta, pero buehg.
+	_graphic->drawText(_tr, ent->getNombre(), ga::Point(basePixel.x+ent->getOffset().x+16-(ent->getNombre().size()*7/2),basePixel.y+ent->getOffset().y+32));
 
 
 	if(ent->isMoving()){
@@ -299,7 +204,7 @@ inline void RendererEngine::renderEntityLayer( ao::MapTile & tile, Offset basePi
 			{
 				ent->decOffset(32/4);
 
-			}else if(_lastFpsCount<90)
+			}else if(_lastFpsCount<87)
 			{
 				ent->decOffset(32/8);
 
@@ -314,41 +219,14 @@ inline void RendererEngine::renderEntityLayer( ao::MapTile & tile, Offset basePi
 	}
 }
 
-void RendererEngine::setCurrentLight(unsigned char r, unsigned char g, unsigned char b)
-{
-	current_light[0]=r;
-	current_light[1]=g;
-	current_light[2]=b;
-}
-
-void RendererEngine::setTargetLight(unsigned char r, unsigned char g, unsigned char b)
-{
-	target_light[0]=r;
-	target_light[1]=g;
-	target_light[2]=b;
-}
-
-
-void RendererEngine::calcLight()
-{
-	if(memcmp(current_light,target_light,3)!=0)
-	{
-		for(int i=0;i<3;i++)
-		{
-			if(current_light[i]>target_light[i])
-			{
-				current_light[i]--;
-			}else if (current_light[i]<target_light[i])
-			{
-				current_light[i]++;
-			}
-		}
-	}
-}
-
 void RendererEngine::renderTecho( ao::MapTile & tile, Offset basePixel )
 {
-	renderLayerTile( 3, tile, basePixel, true, true, alpha_techos );
+	if(!ClienteArgentum::instancia()->hayTecho())
+	{
+		renderLayerTile( 3, tile, basePixel, true );
+	}else{
+		renderLayerTile( 3, tile, basePixel, true, true ,127);
+	}
 }
 
 /*
@@ -388,20 +266,20 @@ static inline T check_bounds( T value, T min, T max )
 	return value;
 }
 
-inline void RendererEngine::renderTextos()
+void RendererEngine::renderTextos()
 {
-	_graphic->drawText(Fonts::sans_12_white(),  _fps_string, ga::Point(800-120, 2));
+	_graphic->drawText(_tr, _fps_string, ga::Point(800-60, 2));
 	std::list<std::string> *last_5 = Consola::instancia()->get_last_5();
 	std::list<std::string>::iterator iter;
 	int i=0;
 	for(iter = last_5->begin(); iter != last_5->end(); iter++)
 	{
-		_graphic->drawText(NULL,  *iter, ga::Point(10, i*14));
+		_graphic->drawText(_tr, *iter, ga::Point(10, i*14));
 		i++;
 	}
 }
 
-void RendererEngine::render( int incX, int incY , bool fullrender)
+void RendererEngine::render( int incX, int incY, int offX, int offY )
 {
 	int x, y;
 //	int basePixelX, basePixelY;
@@ -412,35 +290,15 @@ void RendererEngine::render( int incX, int incY , bool fullrender)
 	int startX_real, endX_real, startY_real, endY_real;	
 	
 	int tilesFuera;
-
-
-	if(!ClienteArgentum::instancia()->hayTecho())
-	{
-		if(alpha_techos<255)
-			alpha_techos+=2;
-	}else{
-		if(alpha_techos>80)
-			alpha_techos-=2;
-	}
-
-	calcLight();
-	_graphic->setBaseLight(current_light[0],current_light[1],current_light[2]);
-
+	
 	// Indica cuantos tiles adicionales se dibujan en las 4 direcciones
 	
 	tilesFuera = 1;
 	
 	startX_real = incX - 24/2 - tilesFuera ;
 	endX_real = incX + 24/2 + tilesFuera ;
-	if(fullrender==false)
-	{
-		startY_real = incY - 14/2 - tilesFuera;
-		endY_real = incY + 14/2 + tilesFuera;
-	}else
-	{
-		startY_real = incY - 14/2 - tilesFuera;
-		endY_real = incY + 20/2 + tilesFuera;
-	}
+	startY_real = incY - 14/2 - tilesFuera;
+	endY_real = incY + 14/2 + tilesFuera;
 	
 	// Ajusto el rango de tiles a dibujar para que no se vaya de rango
 	
@@ -449,21 +307,16 @@ void RendererEngine::render( int incX, int incY , bool fullrender)
 	startY = check_bounds( startY_real, ao::MapFile::MapaMinY, ao::MapFile::MapaMaxY );
 	endY = check_bounds( endY_real, ao::MapFile::MapaMinY, ao::MapFile::MapaMaxY );
 	
-	basePixelX_start = ( -tilesFuera - startX_real + startX ) * 32;
-	if(ClienteArgentum::instancia()->getCurrentChar())
-		basePixelX_start -= ClienteArgentum::instancia()->_entities[ClienteArgentum::instancia()->getCurrentChar()]->getOffset().x;
-
-	basePixelY_start = ( -tilesFuera - startY_real + startY ) * 32 ;
-	if(ClienteArgentum::instancia()->getCurrentChar())
-		basePixelY_start -= ClienteArgentum::instancia()->_entities[ClienteArgentum::instancia()->getCurrentChar()]->getOffset().y;
+	basePixelX_start = ( -tilesFuera - startX_real + startX ) * 32 - offX;
+	basePixelY_start = ( -tilesFuera - startY_real + startY ) * 32 - offY;
 
 	for ( y = startY, basePixel.y = basePixelY_start; y <= endY; y++, basePixel.y += 32 )
 	{
 		for ( x = startX, basePixel.x = basePixelX_start; x <= endX; x++, basePixel.x += 32 )
 		{
 			ao::Pos pos( x, y );
-			/*try
-			{*/
+			try
+			{
 				ao::MapTile & tile = _map->getTile( pos );
 				
 				//
@@ -476,13 +329,18 @@ void RendererEngine::render( int incX, int incY , bool fullrender)
 					renderLayerTile( 1, tile, basePixel, false );
 				}
 				
-			/*}
+			}
 			catch(...)
 			{
-			}*/
+			}
 		}
 	}
 	
+
+
+	
+
+
 
 
 
@@ -501,13 +359,8 @@ void RendererEngine::render( int incX, int incY , bool fullrender)
 	startY = check_bounds( startY_real, ao::MapFile::MapaMinY, ao::MapFile::MapaMaxY );
 	endY = check_bounds( endY_real, ao::MapFile::MapaMinY, ao::MapFile::MapaMaxY );
 	
-	basePixelX_start = ( -tilesFueraX - startX_real + startX ) * 32;
-	if(ClienteArgentum::instancia()->getCurrentChar())
-		basePixelX_start -= ClienteArgentum::instancia()->_entities[ClienteArgentum::instancia()->getCurrentChar()]->getOffset().x;
-
-	basePixelY_start = ( -tilesFueraY - startY_real + startY +3) * 32; 
-	if(ClienteArgentum::instancia()->getCurrentChar())
-		basePixelY_start -= ClienteArgentum::instancia()->_entities[ClienteArgentum::instancia()->getCurrentChar()]->getOffset().y;
+	basePixelX_start = ( -tilesFueraX - startX_real + startX ) * 32 - offX;
+	basePixelY_start = ( -tilesFueraY - startY_real + startY +3) * 32 - offY; 
 
 	// END COPY-PASTE Inc. //
 	_could_walk=false;
@@ -550,8 +403,8 @@ void RendererEngine::render( int incX, int incY , bool fullrender)
 		for ( x = startX, basePixel.x = basePixelX_start; x <= endX; x++, basePixel.x += 32 )
 		{
 			ao::Pos pos( x, y );
-			/*try
-			{*/
+			try
+			{
 				ao::MapTile & tile = _map->getTile( pos );
 
 				if ( tile.obj.isValid() )
@@ -578,10 +431,10 @@ void RendererEngine::render( int incX, int incY , bool fullrender)
 				//
 				// Char FX Layer
 				//
-			/*}
+			}
 			catch(...)
 			{
-			}*/
+			}
 		}
 	}
 
@@ -589,7 +442,7 @@ void RendererEngine::render( int incX, int incY , bool fullrender)
 	{
 		text_to_be_rendered *temp_t = textos.back();
 		textos.pop_back();
-		_graphic->drawText(temp_t->font, temp_t->text, temp_t->donde);
+		_graphic->drawText(_tr, temp_t->text, temp_t->donde);
 		delete temp_t;
 	}
 
@@ -598,8 +451,8 @@ void RendererEngine::render( int incX, int incY , bool fullrender)
 		for ( x = startX, basePixel.x = basePixelX_start; x <= endX; x++, basePixel.x += 32 )
 		{
 			ao::Pos pos( x, y );
-			/*try
-			{*/
+			try
+			{
 				ao::MapTile & tile = _map->getTile( pos );
 
 				//
@@ -611,19 +464,13 @@ void RendererEngine::render( int incX, int incY , bool fullrender)
 					renderTecho( tile, basePixel );
 				}
 				
-			/*}
+			}
 			catch(...)
 			{
-			}*/
+			}
 		}
 	}
-	if(raining)
-	{
-		grupo->render(400,-20,_graphic,_grhManager, _imgMan);
-		grupo2->render(200,-20,_graphic,_grhManager, _imgMan);
-	}
-	//grupo3->render(217,130,_graphic,_grhManager, _imgMan);
-	//grupo4->render(400,450,_graphic,_grhManager, _imgMan);
+	
 	renderTextos();
 	
 }

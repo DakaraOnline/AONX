@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2008 by Esteban Torre                                   *
- *   esteban.torre@gmail.com                                               *
+ *   Copyright (C) 2007 by alejandro santos                                *
+ *   alejolp@gmail.com                                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,25 +18,28 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef _mensajes_h
-#define _mensajes_h
+#ifndef __AONX_HELPER_GRAPHICS_H__
+#define __AONX_HELPER_GRAPHICS_H__
 
-#include <string>
-#include <vector>
+#include "SDL.h"
 
-class Msgs
-{
-public:
-	Msgs(){};
-	~Msgs(){};
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
 
-	std::string get(unsigned int n);
-	std::string get(unsigned int n, const std::string &params);
+#include <GL/gl.h>
+#include <GL/glu.h>
 
-	void cargarDatos();
+int power_of_two(int input);
 
-private:
-	std::vector<std::string> data;
-};
+GLuint SDL_GL_LoadTexture(SDL_Surface * surface, GLfloat * texcoord);
 
-#endif //#ifndef _mensajes_h
+void SDL_GL_drawImageLow(GLuint handle, GLfloat min_x, GLfloat min_y, GLfloat max_x, GLfloat max_y, GLint w, GLint h, GLint x, GLint y, bool ck , unsigned char alpha);
+
+void SDL_GL_drawImageLow(GLuint handle, GLfloat min_x, GLfloat min_y, GLfloat max_x, GLfloat max_y, GLint w, GLint h, GLint x, GLint y);
+
+void SDL_GL_convertCoords(GLfloat* coords, GLint x, GLint y, GLint w, GLint h, const GLfloat * texcoord, GLint iw, GLint ih );
+
+#endif // __AONX_HELPER_GRAPHICS_H__
+

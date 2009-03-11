@@ -20,14 +20,9 @@
 #ifndef _helpers_h
 #define _helpers_h
 #include "SDL.h"
-#include <string>
-
 int GetRandomNumber(int min, int max);
 bool ValidateAlpha(const char* what);//WARNING what SHOULD BE A NULL ENDED STRING
 bool ValidateAlphaNum(const char* what);//WARNING what SHOULD BE A NULL ENDED STRING
 bool ValidateCommon(const char* what);//WARNING what SHOULD BE A NULL ENDED STRING
-
-int to_number(const std::string &s);
-std::string to_string(int n);
 
 #endif

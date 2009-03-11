@@ -24,6 +24,7 @@
 
 std::string ConfigData::BasePath;
 bool ConfigData::Fullscreen = false;
+bool ConfigData::Sdl = false;
 bool ConfigData::Mute = false;
 
 ConfigData::ConfigData()
@@ -56,8 +57,7 @@ std::string ConfigData::GetStdBasePath()
 		return BasePath;
 	} else {
 #ifdef WIN32
-		return std::string("..\\");
-		//return std::string("\\aonx\\");
+		return std::string("\\aonx");
 #else
 		return std::string(getenv("HOME"));
 #endif

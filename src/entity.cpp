@@ -27,46 +27,14 @@ namespace ao
 
 
 	Entity::Entity(ao::MapFile_ptr map, const Pos & epos, Heading dir)
-		: moving(false),ox(0),oy(0),tempoff(0),_heading(dir), _map(map),  _pos(epos), usandoArma(false),part(NULL),chat_time(0)
+		: moving(false),ox(0),oy(0),tempoff(0),_heading(dir), _map(map),  _pos(epos), usandoArma(false)
 	{
 		setPos(epos);
-		fxx.anim.index=0;
 	}
 	
 	Entity::~Entity()
 	{
 		removeFromMap();
-	}
-
-	void Entity::setFx(BodyData_ptr bodyData, int index, int loops)
-	{
-		if(index>0)
-		{
-			if(bodyData->_fxs.size()>index)
-			{
-				fxx = bodyData->_fxs[index-1];
-				fxx.anim.looptimes=loops;
-				fxx.anim.start();
-			}else
-			{
-				fxx.anim.index=0;
-			}
-		}else
-		{
-			fxx.anim.index=0;
-		}
-	}
-
-	void Entity::setPart(int n)
-	{
-		if(part)
-			delete part;
-		part = new GrupoDeParticulas(n);
-	}
-
-	Offset Entity::getFxOffset()
-	{
-		return fxx.offset;
 	}
 
 	void Entity::startMoving(){
@@ -189,14 +157,7 @@ namespace ao
 			escudo.anim[3].index=0;
 		}
 	}
-	GrhBasic & Entity::getFxGrh()
-	{
-		if(!fxx.anim.started)
-		{
-			fxx.anim.index=0;//TODO: el sistema en general apesta.
-		}
-		return fxx.anim;
-	}
+	
 	bool Entity::moveDir(Heading dir, bool checkBlock)
 	{
 

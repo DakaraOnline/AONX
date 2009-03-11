@@ -50,6 +50,9 @@ typedef linked_ptr<ImageManager> ImageManager_ptr;
 class GuichanLoader;
 typedef linked_ptr<GuichanLoader> GuichanLoader_ptr;
 
+class TextRenderer;
+typedef linked_ptr<TextRenderer> TextRenderer_ptr;
+
 namespace ao
 {
 	
