@@ -38,6 +38,8 @@ using namespace std;
 #include <fcntl.h>
 #endif
 
+#include <cstdlib>
+
 #define SOCKET_TMP_BUFFER_SIZE 16384
 
 csocket::csocket(EventListener* evListener) 

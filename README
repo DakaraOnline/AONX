@@ -12,7 +12,10 @@ Se necesita:
 
 Procedimiento:
 
-$ ./configure
+USAR CMAKE
+
+$ mkdir build && cd build
+$ cmake ..
 $ make
 
 TODO: Faltan mas cosas ...

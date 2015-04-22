@@ -20,6 +20,7 @@
 #include "console.h"
 #include <sstream>
 #include "configdata.h"
+#include <cstring>
 
 Consola* Consola::_instancia = 0;
 std::stringstream Consola::buffer;
